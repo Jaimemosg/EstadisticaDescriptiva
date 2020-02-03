@@ -27,12 +27,10 @@ datos_full <- read_table2(myURL)
 
 También está disponible en [Google Classroom](https://classroom.google.com/w/Mzk2OTk1NjE4NzFa/t/all), si desea descargarlo para importarl localmente:
 
-```{r}
+```{r, eval=FALSE}
 # Importar datos localmente
 datos_full <- read.table(file.choose(), header = T)
 ```
-
-
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 myURL <- "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
