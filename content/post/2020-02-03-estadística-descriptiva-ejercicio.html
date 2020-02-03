@@ -15,9 +15,13 @@ tags: []
 </div>
 <div id="extracción-de-la-muestra" class="section level1">
 <h1>Extracción de la muestra</h1>
-<p>Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo <code>datos_taller.txt</code>. el cual está disponible en Google Classroom. Para hacerlo debe seguir los siguientes pasos:</p>
-<pre class="r"><code># Leer datos localmente
+<p>Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo <code>datos_taller.txt</code>. el cual está disponible en <a href="https://classroom.google.com/w/Mzk2OTk1NjE4NzFa/t/all">Google Classroom</a>. Para hacerlo debe seguir los siguientes pasos:</p>
+<pre class="r"><code># Importar datos localmente
 datos_full &lt;- read.table(file.choose(), header = T)
+
+# Alternativamente, puede importarlos desde el repositorio de GitHub
+myURL &lt;- &quot;https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt&quot;
+load(url(myURL))
 
 # Función para extraer la muestra
 muestra &lt;- function(clave){

@@ -13,11 +13,15 @@ En este ejercicio vamos a trabajar con una muestra aleatoria de una _gran_ base 
 
 # Extracción de la muestra
 
-Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo `datos_taller.txt`. el cual está disponible en Google Classroom. Para hacerlo debe seguir los siguientes pasos:
+Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo `datos_taller.txt`. el cual está disponible en [Google Classroom](https://classroom.google.com/w/Mzk2OTk1NjE4NzFa/t/all). Para hacerlo debe seguir los siguientes pasos:
 
 ```{r, eval=FALSE}
-# Leer datos localmente
+# Importar datos localmente
 datos_full <- read.table(file.choose(), header = T)
+
+# Alternativamente, puede importarlos desde el repositorio de GitHub
+myURL <- "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
+load(url(myURL))
 
 # Función para extraer la muestra
 muestra <- function(clave){
