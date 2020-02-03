@@ -1,0 +1,32 @@
+---
+title: Estadística descriptiva - Ejercicio
+author: Jaime Mosquera Gutiérrez
+date: '2020-02-03'
+slug: estadística-descriptiva-ejercicio
+categories: [Estadística descriptiva]
+tags: []
+---
+
+
+
+<div id="datos-de-los-estudiantes" class="section level1">
+<h1>Datos de los estudiantes</h1>
+<p>En este ejercicio vamos a trabajar con una muestra aleatoria de una <em>gran</em> base de datos. La base original corresponde a la información de 202 estudiantes de la Universidad de Antioquia. Dicha base contiene las variables: MASA (en kg), <strong>ESTATURA</strong> (en cm. del estudiante), <strong>GENERO</strong> (HOMBRE o MUJER), <strong>ESTRATO</strong> y <strong>FUMA</strong> (SI o NO).</p>
+</div>
+<div id="extracción-de-la-muestra" class="section level1">
+<h1>Extracción de la muestra</h1>
+<p>Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo <code>datos_taller.txt</code>. el cual está disponible en Google Classroom. Para hacerlo debe seguir los siguientes pasos:</p>
+<pre class="r"><code># Leer datos localmente
+datos_full &lt;- read.table(file.choose(), header = T)
+
+# Función para extraer la muestra
+muestra &lt;- function(clave){
+set.seed(clave)
+data &lt;- datos_full[sample(1:200,80),]
+return(data)
+}
+
+# Para crear la base de datos, ejecutamos la función
+clave &lt;- 21368123
+datos &lt;- muestra(clave)</code></pre>
+</div>
