@@ -1,5 +1,5 @@
 ---
-title: Estadística descriptiva - Ejercicio
+title: Estadística descriptiva en R
 author: Jaime Mosquera Gutiérrez
 date: '2020-02-03'
 slug: estadística-descriptiva-ejercicio
@@ -140,7 +140,7 @@ Tabla_Estrato</code></pre>
 <pre class="r"><code>with(datos, Barplot(ESTRATO, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia&quot;, col = &quot;lightblue&quot;,
                     main = &quot;Distribución del Estrato entre los estudiantes&quot;))</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<p>A diferencia de <code>barplot</code>, <code>Barplot</code>tiene como argumento de entrada un vector de clase <em>factor</em> o de clase <em>character</em>. Recuerde, el resultado obtenido con <code>Barplot</code> se puede replicar también en la interfaz de RCommander.</p>
+<p><code>barplot</code> (de <strong>graphics</strong>) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como <code>factor</code> o como <code>character</code>. Por otro lado, <code>Barplot</code> (de <strong>Rcmdr</strong>) recibe como argumento de entrada un vector de clase <code>factor</code>. Recuerde, el resultado obtenido con <code>Barplot</code> se puede replicar también en la interfaz de RCommander.</p>
 <ol start="3" style="list-style-type: decimal">
 <li>Si se considera la variable ESTATURA, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.</li>
 </ol>
@@ -149,7 +149,7 @@ Tabla_Estrato</code></pre>
 boxplot(ESTATURA ~ GENERO, data = datos)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>¿Cómo se puede describir la distribución de la <strong>ESTATURA</strong> en hombres respecto a mujeres?</p>
-<p><strong>EJERCICIO</strong> El gráfico anterior se generó con el paquete <strong>graphics</strong>, que está preinstalado en <code>R</code>. Grafique un bocplot en RCOmmander.</p>
+<p><strong>EJERCICIO</strong> El gráfico anterior se generó con el paquete <strong>graphics</strong>, que está preinstalado en <code>R</code>. Grafique un boxplot en RCommander.</p>
 <p>La respuesta puede complementarse con otros gráficos descriptivos. <strong>Rcmdr</strong> permite graficar histogramas de forma simultánea, de acuerdo con las categorías de una variable cualitativa:</p>
 <pre class="r"><code># Con RCommander
 datos$GENERO &lt;- as.factor(datos$GENERO)

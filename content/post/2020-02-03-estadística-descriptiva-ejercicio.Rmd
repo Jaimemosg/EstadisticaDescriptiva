@@ -1,5 +1,5 @@
 ---
-title: Estadística descriptiva - Ejercicio
+title: Estadística descriptiva en R
 author: Jaime Mosquera Gutiérrez
 date: '2020-02-03'
 slug: estadística-descriptiva-ejercicio
@@ -172,7 +172,7 @@ with(datos, Barplot(ESTRATO, xlab = "Estrato", ylab = "Frecuencia", col = "light
                     main = "Distribución del Estrato entre los estudiantes"))
 ```
 
-A diferencia de `barplot`, `Barplot`tiene como argumento de entrada un vector de clase _factor_ o de clase _character_. Recuerde, el resultado obtenido con `Barplot` se puede replicar también en la interfaz de RCommander.
+`barplot` (de **graphics**) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como `factor` o como `character`. Por otro lado, `Barplot` (de **Rcmdr**) recibe como argumento de entrada un vector de clase `factor`. Recuerde, el resultado obtenido con `Barplot` se puede replicar también en la interfaz de RCommander.
 
 3. Si se considera la variable ESTATURA, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.
 
@@ -185,7 +185,7 @@ boxplot(ESTATURA ~ GENERO, data = datos)
 
 ¿Cómo se puede describir la distribución de la **ESTATURA** en hombres respecto a mujeres?
 
-**EJERCICIO** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un bocplot en RCOmmander.
+**EJERCICIO** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un boxplot en RCommander.
 
 La respuesta puede complementarse con otros gráficos descriptivos. **Rcmdr** permite graficar histogramas de forma simultánea, de acuerdo con las categorías de una variable cualitativa:
 
