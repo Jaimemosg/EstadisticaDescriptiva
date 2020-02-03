@@ -5,6 +5,8 @@ date: '2020-02-03'
 slug: estadística-descriptiva-ejercicio
 categories: [Estadística descriptiva]
 tags: []
+editor_options: 
+  chunk_output_type: console
 ---
 
 # Datos de los estudiantes
@@ -13,22 +15,34 @@ En este ejercicio vamos a trabajar con una muestra aleatoria de una _gran_ base 
 
 # Extracción de la muestra
 
-Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo `datos_taller.txt`. el cual está disponible en [Google Classroom](https://classroom.google.com/w/Mzk2OTk1NjE4NzFa/t/all). También puede descargarlos directamente de un repositorio de Git Hub:
+Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo `datos_taller.txt`. el cual puede descargarlos directamente desde un repositorio de Git Hub:
 
 ```{r, eval=FALSE}
-# Importar datos localmente
-datos_full <- read.table(file.choose(), header = T)
-
-# Alternativamente, importar desde Git Hub
+# Importar desde Git Hub
 myURL <- 
   "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
 library(readr)
 datos_full <- read_table2(myURL)
 ```
 
+También está disponible en [Google Classroom](https://classroom.google.com/w/Mzk2OTk1NjE4NzFa/t/all), si desea descargarlo para importarl localmente:
+
+```{r}
+# Importar datos localmente
+datos_full <- read.table(file.choose(), header = T)
+```
+
+
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+myURL <- "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
+library(readr)
+datos_full <- read_table2(myURL)
+```
+
 Para crear la muestra, siga lo siguientes pasos:
 
-```{r, eval=FALSE}
+```{r}
 # Función para extraer la muestra
 muestra <- function(clave){
 set.seed(clave)
@@ -41,13 +55,26 @@ clave <- 21368123
 datos <- muestra(clave)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
-myURL <- "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
-library(readr)
-datos_full <- read_table2(myURL)
+`clave` representa la semilla para generar **siempre** el mismo vector de números aleatorios. Esto garantiza que a todos nos funcione el ejercicio igual.
+
+En este ejercicio, vamos a trabajar con varios paquetes. Copie y pegue en su consola de `R` la siguiente líneas para instalarlos:
+
+```{r, eval=FALSE}
+insinstall.packages(c("Rcmdr", "RcmdrMisc", "tidyverse"))
 ```
 
-`clave` representa la semilla para generar **siempre** el mismo vector de números aleatorios. Esto garantiza que a todos nos funcione el ejercicio igual.
+Ahora, puede cargar los paquetes. Ignore los _warnings_ que le aparezcan.
+
+```{r, warning=FALSE}
+library(RcmdrMisc)
+library(tidyverse)
+```
+
+Los paquetes anteriores son útiles para trabajar con líneas de código dentro de un script. Si desea apoyarse con la incerfaz de RCommander (recomendable), cargue el paquete que abre dicha interfaz:
+
+```{r, eval=FALSE}
+library(Rcmdr)
+```
 
 # Preguntas
 
@@ -55,11 +82,250 @@ Usando la base de datos generada a partir de la muestra, responda a las siguient
 
 1. Para las variables MASA y ESTATURA, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información.
 
+Dentro del paquete **base**, `R` posee una función que calcula algunos estadísticos descriptivos:
+
+```{r}
+# Resumen numérico del paquete Base
+summary(datos)
+```
+
+Por otro lado, **RCommander** tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:
+
+```{r}
+# Resumen numérico con RCommander
+numSummary(datos[,c("ESTATURA", "MASA"), drop=FALSE], statistics=c("mean", 
+           "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+```
+
+Concluya bajo el contexto de la información. 
+
+Para consultar la documentación de cualquier función, puede hacerlo cargando el paquete donde está alojada y luego debe invocarla escribiendo antes `?`
+
+```{r, eval=FALSE}
+# Abrir la documentación de esta función
+?numSummary
+```
+
+A continuación, vamos a graficar la distribución de los datos de la **ESTATURA** mediante un histograma (izquierda) y un gráfico de densidad (derecha):
+
+```{r}
+par(mfrow=c(1,2))                       # genera dos espacios dentro de una ventana
+with(datos, hist(ESTATURA, main = ""))  # grafica el histograma
+with(datos, plot(density(ESTATURA), 
+                 main = "", xlab = "ESTATURA"))  # genera gráfico de densidad
+```
+
+¿Existe sesgo?¿Hacia qué dirección? 
+
+**EJERCICIO** Grafique en su consola de `R` las mismas figuras para la variable **MASA**.
+
 2. Para la variable ESTRATO, elabore una tabla de porcentajes y el respectivo gráfico. Comente los resultados obtenidos en el gráfico.
+
+Observemos el tipo de variables que hay en el marco de datos (_data frame_):
+
+```{r}
+sapply(datos, FUN = class)
+```
+
+Como podemos observar, la variable **ESTRATO** fue detectada como numérica, pero sabemos que en la práctica el concepto que representa se relaciona con las variables categóricas. Para solucionar este problema, vamos a _coercionar_ la variable, para que sea de tipo _factor_. Esta es una estructura de datos que refleja el comportamiento de una variable categórica:
+
+```{r}
+datos$ESTRATO <- as.factor(datos$ESTRATO)
+levels(datos$ESTRATO)
+```
+
+con el método `levels` usted podrá ver las categorías correspondientes a la variable. Con la variable como factor, puede construir la tabla de frecuencia absoluta con `xtabs`:
+
+```{r}
+xTabla_Estrato <- xtabs(~ESTRATO, data = datos)
+xTabla_Estrato
+class(xTabla_Estrato)
+```
+
+o con la función `table`:
+
+```{r}
+Tabla_Estrato <- table(datos$ESTRATO)
+Tabla_Estrato
+class(Tabla_Estrato)
+```
+
+Los objetos `table` y `xtable` tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto `xtable`:
+
+```{r}
+Tabla_Porcentaje <- xTabla_Estrato*100/nrow(datos)
+```
+
+Con la tabla construida, es posible realizar el gráfico correspondiente:
+
+```{r}
+barplot(Tabla_Porcentaje, xlab = "Estrato", ylab = "Frecuencia Relativa (%)", col = "pink",
+        main = "Distribución del Estrato entre los estudiantes")
+```
+
+¿Por qué? se realizó un gráfico de barras?
+
+**EJERCICIO** Grafique un diagrama de barras para la variable **GENERO**.
+
+Alternativamente, puede utilizar la función del paquete **Rcmdr** para hacer un gráfico de barras:
+
+```{r}
+with(datos, Barplot(ESTRATO, xlab = "Estrato", ylab = "Frecuencia", col = "lightblue",
+                    main = "Distribución del Estrato entre los estudiantes"))
+```
+
+A diferencia de `barplot`, `Barplot`tiene como argumento de entrada un vector de clase _factor_ o de clase _character_. Recuerde, el resultado obtenido con `Barplot` se puede replicar también en la interfaz de RCommander.
 
 3. Si se considera la variable ESTATURA, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.
 
+El _boxplot_ muestra el comportamiento de la distribución de datos, agrupada en las categorías que se especifiquen. Veamos:
+
+```{r}
+# Paquete graphics
+boxplot(ESTATURA ~ GENERO, data = datos)
+```
+
+¿Cómo se puede describir la distribución de la **ESTATURA** en hombres respecto a mujeres?
+
+**EJERCICIO** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un bocplot en RCOmmander.
+
+La respuesta puede complementarse con otros gráficos descriptivos. **Rcmdr** permite graficar histogramas de forma simultánea, de acuerdo con las categorías de una variable cualitativa:
+
+```{r}
+# Con RCommander
+datos$GENERO <- as.factor(datos$GENERO)
+H <- with(datos, Hist(ESTATURA, groups = GENERO, scale = "frequency", 
+                      breaks = "Sturges", col = "darkgray", xlab = "Estatura", 
+                      ylab = "Frecuencia"))
+```
+
+Si observa detalladamente, los límites de los intervalos de clase se acomodan justo igual para ambas categorías. Vamos a imprimir sus valores calculados:
+
+```{r}
+# Límites del histograma de 'Rcmdr'
+H$MUJER$breaks
+```
+
+Repliquemos este mismo tipo de gráfica con el paquete **tidyverse**
+
+```{r}
+ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
+  geom_histogram(binwidth = 0.7)
+```
+
+En **ggplot2**, cada función que se aplica al _pipe_ tiene argumentos de entrada que modifican el gráfico:
+
+```{r}
+ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
+  geom_histogram(color = "black", fill = "pink", breaks = seq(150, 180, by = 5))
+```
+
+A su vez, cada operación que se aplica al _pipe_ va modificando el gráfico. Por ejemplo, `facet_grid` es una función que genera dos gráficos según la variable categórica de agrupación que se especifique:
+
+```{r}
+ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
+  geom_histogram(color = "black", fill = "pink", breaks = seq(150, 180, by = 5)) + 
+  facet_grid(. ~ GENERO)
+```
+
+`theme_bw` cambia el fondo del gráfico:
+
+```{r}
+ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
+  geom_histogram(color = "black", fill = "pink", breaks = seq(150, 180, by = 5)) + 
+  facet_grid(. ~ GENERO) +  theme_bw()
+```
+
+De forma similar, se pueden graficar las densidades:
+
+```{r}
+ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
+  geom_density() + 
+  theme_bw() + facet_grid(. ~ GENERO)
+```
+
+Sea con **Rcmdr** o con **ggplot2**, se forzó a ambas categorías de **GENERO** tuvieran los mismos intervalos de clase. Ahora, grafiquemos de manera independiente:
+
+```{r}
+datosF <- datos %>% filter(GENERO == "MUJER")  # Filtramos la distribución de mujeres
+datosM <- datos %>% filter(GENERO == "HOMBRE") # Filtramos la distribución de hombres
+
+# Comparamos media y mediana (sesgo)
+print("MUJERES")
+numSummary(datosF[,c("ESTATURA"), drop=FALSE], statistics=c("mean", 
+                "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+print("HOMBRES")
+numSummary(datosM[,c("ESTATURA"), drop=FALSE], statistics=c("mean", 
+                  "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+
+par(mfrow = c(1,2))
+with(datosM, hist(ESTATURA, main = ""))
+with(datosF, hist(ESTATURA, main = ""))
+```
+
+¿Son coherentes las gráficas independientes con las simultáneas?
+
+**EJERCICIO** Replique la graficacación simultánea e independiente con la variable **MASA**.
+
 4. ¿Es la MASA promedio de los que fuman inferior a la MASA promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas.
 
-5. ¿Se puede afirmar que el porcentaje de personas que Fuman es mayor en Hombres que
-en Mujeres? Justifique su respuesta.
+Los estadísticos descriptivos son útiles para responder la primera pregunta:
+
+```{r}
+numSummary(datos[,"MASA", drop=FALSE], groups=datos$FUMA, 
+           statistics=c("mean", "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
+```
+
+Además, se puede representar el promedio gráficamente:
+
+```{r}
+datos$FUMA <- as.factor(datos$FUMA)
+with(datos, plotMeans(MASA, FUMA, error.bars="se", xlab="Fuma", 
+                      ylab="Masa promedio", main="", connect=TRUE))
+```
+
+Recuerde, los datos atípicos se pueden detectar con un _boxplot_
+
+```{r}
+# Boxplot de RCommander
+Boxplot(MASA~FUMA, data=datos, id=list(method="y"))
+```
+
+Concluya bajo el contexto de la información.
+
+5. ¿Se puede afirmar que el porcentaje de personas que Fuman es mayor en Hombres que en Mujeres? Justifique su respuesta.
+
+Basta con realizar una tabla de contingencia para responder esta pregunta:
+
+```{r}
+Conteo <- xtabs(~FUMA+GENERO, data=datos)
+Porcentajes <- totPercents(Conteo, digits = 2)
+Porcentajes
+```
+
+¿Por qué razón se sabe claramente que esta pregunta se responde con este tipo de tabla?
+
+**BONUS** La tabla de contingencia también se puede representar graficamente:
+
+```{r}
+barplot(t(Porcentajes[1:2,1:2]), beside = T, col = 3:4, xlab = "Fuma", ylab = "Frecuencia (%)")
+legend("topright", legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4)
+```
+
+6. ¿Qué cantidad de estudiantes tienen una estatura igual o menor a 170 cm? ¿Qué porcentaje representan?
+
+La pregunta pregunta por los datos _iguales o menores a..._. Esto es un indicativo de que se puede responder sobre la base de la frecuencia acumulada. Para ello, resulta útil la _ojiva_:
+
+```{r}
+h <- hist(datos$ESTATURA, col = "Steelblue3")
+
+library(agricolae)
+ogive.freq(h)
+```
+
+También puede construir una tabla frecuencias. Puede hacerlo revisando el siguiente [enlace](https://www.r-tutor.com/elementary-statistics/quantitative-data/frequency-distribution-quantitative-data)
+
+
+7. ¿Qué porcentaje de estudiantes mujeres tienen una MASA mayor a 55 kg?
+
+_Basado en el procedimiento de la pregunta anterior, responda esta._

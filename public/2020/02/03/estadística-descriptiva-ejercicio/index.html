@@ -60,7 +60,7 @@
 
   <article class="article">
     
-    <span class="article-duration">2 min read</span>
+    <span class="article-duration">5 min read</span>
     
 
     <h1 class="article-title">Estadística descriptiva - Ejercicio</h1>
@@ -100,13 +100,110 @@ return(data)
 clave &lt;- 21368123
 datos &lt;- muestra(clave)</code></pre>
 <p><code>clave</code> representa la semilla para generar <strong>siempre</strong> el mismo vector de números aleatorios. Esto garantiza que a todos nos funcione el ejercicio igual.</p>
+<p>En este ejercicio, vamos a trabajar con varios paquetes. Copie y pegue en su consola de <code>R</code> la siguiente líneas para instalarlos:</p>
+<pre class="r"><code>insinstall.packages(c(&quot;Rcmdr&quot;, &quot;RcmdrMisc&quot;, &quot;tidyverse&quot;))</code></pre>
+<p>Ahora, puede cargar los paquetes. Ignore los <em>warnings</em> que le aparezcan.</p>
+<pre class="r"><code>library(RcmdrMisc)</code></pre>
+<pre><code>## Loading required package: car</code></pre>
+<pre><code>## Loading required package: carData</code></pre>
+<pre><code>## Loading required package: sandwich</code></pre>
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## v ggplot2 3.2.1     v dplyr   0.8.3
+## v tibble  2.1.3     v stringr 1.4.0
+## v tidyr   1.0.0     v forcats 0.4.0
+## v purrr   0.3.3</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------------------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()
+## x dplyr::recode() masks car::recode()
+## x purrr::some()   masks car::some()</code></pre>
+<p>Los paquetes anteriores son útiles para trabajar con líneas de código dentro de un script. Si desea apoyarse con la incerfaz de RCommander (recomendable), cargue el paquete que abre dicha interfaz:</p>
+<pre class="r"><code>library(Rcmdr)</code></pre>
 </div>
 <div id="preguntas" class="section level1">
 <h1>Preguntas</h1>
 <p>Usando la base de datos generada a partir de la muestra, responda a las siguientes preguntas:</p>
 <ol style="list-style-type: decimal">
-<li><p>Para las variables MASA y ESTATURA, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información.</p></li>
-<li><p>Para la variable ESTRATO, elabore una tabla de porcentajes y el respectivo gráfico. Comente los resultados obtenidos en el gráfico.</p></li>
+<li>Para las variables MASA y ESTATURA, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información.</li>
+</ol>
+<p>Dentro del paquete <strong>base</strong>, <code>R</code> posee una función que calcula algunos estadísticos descriptivos:</p>
+<pre class="r"><code># Resumen numérico del paquete Base
+summary(datos)</code></pre>
+<pre><code>##       MASA          ESTATURA        GENERO             ESTRATO     
+##  Min.   :40.00   Min.   :150.0   Length:80          Min.   :1.000  
+##  1st Qu.:55.75   1st Qu.:163.8   Class :character   1st Qu.:2.000  
+##  Median :63.50   Median :170.0   Mode  :character   Median :3.000  
+##  Mean   :63.48   Mean   :169.8                      Mean   :2.587  
+##  3rd Qu.:68.50   3rd Qu.:176.2                      3rd Qu.:3.000  
+##  Max.   :90.00   Max.   :187.0                      Max.   :6.000  
+##      FUMA          
+##  Length:80         
+##  Class :character  
+##  Mode  :character  
+##                    
+##                    
+## </code></pre>
+<p>Por otro lado, <strong>RCommander</strong> tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:</p>
+<pre class="r"><code># Resumen numérico con RCommander
+numSummary(datos[,c(&quot;ESTATURA&quot;, &quot;MASA&quot;), drop=FALSE], statistics=c(&quot;mean&quot;, 
+           &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;), quantiles=c(0,.25,.5,.75,1))</code></pre>
+<pre><code>##               mean        sd   IQR  0%    25%   50%    75% 100%  n
+## ESTATURA 169.77500  8.895988 12.50 150 163.75 170.0 176.25  187 80
+## MASA      63.47625 11.377106 12.75  40  55.75  63.5  68.50   90 80</code></pre>
+<p>Concluya bajo el contexto de la información.</p>
+<p>Para consultar la documentación de cualquier función, puede hacerlo cargando el paquete donde está alojada y luego debe invocarla escribiendo antes <code>?</code></p>
+<pre class="r"><code># Abrir la documentación de esta función
+?numSummary</code></pre>
+<p>A continuación, vamos a graficar la distribución de los datos de la <strong>ESTATURA</strong> mediante un histograma (izquierda) y un gráfico de densidad (derecha):</p>
+<pre class="r"><code>par(mfrow=c(1,2))                       # genera dos espacios dentro de una ventana
+with(datos, hist(ESTATURA, main = &quot;&quot;))  # grafica el histograma
+with(datos, plot(density(ESTATURA), 
+                 main = &quot;&quot;, xlab = &quot;ESTATURA&quot;))  # genera gráfico de densidad</code></pre>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>¿Existe sesgo?¿Hacia qué dirección?</p>
+<p><strong>EJERCICIO</strong> Grafique en su consola de <code>R</code> las mismas figuras para la variable <strong>MASA</strong>.</p>
+<ol start="2" style="list-style-type: decimal">
+<li>Para la variable ESTRATO, elabore una tabla de porcentajes y el respectivo gráfico. Comente los resultados obtenidos en el gráfico.</li>
+</ol>
+<p>Observemos el tipo de variables que hay en el marco de datos (<em>data frame</em>):</p>
+<pre class="r"><code>sapply(datos, FUN = class)</code></pre>
+<pre><code>##        MASA    ESTATURA      GENERO     ESTRATO        FUMA 
+##   &quot;numeric&quot;   &quot;numeric&quot; &quot;character&quot;   &quot;numeric&quot; &quot;character&quot;</code></pre>
+<p>Como podemos observar, la variable <strong>ESTRATO</strong> fue detectada como numérica, pero sabemos que en la práctica el concepto que representa se relaciona con las variables categóricas. Para solucionar este problema, vamos a <em>coercionar</em> la variable, para que sea de tipo <em>factor</em>. Esta es una estructura de datos que refleja el comportamiento de una variable categórica:</p>
+<pre class="r"><code>datos$ESTRATO &lt;- as.factor(datos$ESTRATO)
+levels(datos$ESTRATO)</code></pre>
+<pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot; &quot;6&quot;</code></pre>
+<p>con el método <code>levels</code> usted podrá ver las categorías correspondientes a la variable. Con la variable como factor, puede construir la tabla de frecuencia absoluta con <code>xtabs</code>:</p>
+<pre class="r"><code>xTabla_Estrato &lt;- xtabs(~ESTRATO, data = datos)
+xTabla_Estrato</code></pre>
+<pre><code>## ESTRATO
+##  1  2  3  4  5  6 
+##  7 30 35  6  1  1</code></pre>
+<pre class="r"><code>class(xTabla_Estrato)</code></pre>
+<pre><code>## [1] &quot;xtabs&quot; &quot;table&quot;</code></pre>
+<p>o con la función <code>table</code>:</p>
+<pre class="r"><code>Tabla_Estrato &lt;- table(datos$ESTRATO)
+Tabla_Estrato</code></pre>
+<pre><code>## 
+##  1  2  3  4  5  6 
+##  7 30 35  6  1  1</code></pre>
+<pre class="r"><code>class(Tabla_Estrato)</code></pre>
+<pre><code>## [1] &quot;table&quot;</code></pre>
+<p>Los objetos <code>table</code> y <code>xtable</code> tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto <code>xtable</code>:</p>
+<pre class="r"><code>Tabla_Porcentaje &lt;- xTabla_Estrato*100/nrow(datos)</code></pre>
+<p>Con la tabla construida, es posible realizar el gráfico correspondiente:</p>
+<pre class="r"><code>barplot(Tabla_Porcentaje, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia Relativa (%)&quot;, col = &quot;pink&quot;,
+        main = &quot;Distribución del Estrato entre los estudiantes&quot;)</code></pre>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>¿Por qué? se realizó un gráfico de barras?
+<strong>EJERCICIO</strong> Grafique un diagrama de barras para la variable <strong>GENERO</strong>.</p>
+<p>Alternativamente, puede utilizar la función del paquete <strong>Rcmdr</strong> para hacer un gráfico de barras:</p>
+<pre class="r"><code>with(datos, Barplot(ESTRATO, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia&quot;, col = &quot;lightblue&quot;,
+                    main = &quot;Distribución del Estrato entre los estudiantes&quot;))</code></pre>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>A diferencia de <code>barplot</code>, <code>Barplot</code>tiene como argumento de entrada un vector de clase <em>factor</em> o de clase <em>character</em>. Recuerde, el resultado obtenido con <code>Barplot</code> se puede replicar también en la interfaz de <strong>RCommander</strong></p>
+<ol start="3" style="list-style-type: decimal">
 <li><p>Si se considera la variable ESTATURA, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.</p></li>
 <li><p>¿Es la MASA promedio de los que fuman inferior a la MASA promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas.</p></li>
 <li><p>¿Se puede afirmar que el porcentaje de personas que Fuman es mayor en Hombres que
@@ -147,6 +244,9 @@ en Mujeres? Justifique su respuesta.</p></li>
 
 
     
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
 
     
   </body>
