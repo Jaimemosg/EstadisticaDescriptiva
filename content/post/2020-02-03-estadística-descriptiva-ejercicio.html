@@ -23,7 +23,7 @@ myURL &lt;-
   &quot;https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt&quot;
 library(readr)
 datos_full &lt;- read_table2(myURL)</code></pre>
-<p>También está disponible en <a href="https://classroom.google.com/w/Mzk2OTk1NjE4NzFa/t/all">Google Classroom</a>, si desea descargarlo para importarl localmente:</p>
+<p>También está disponible en <a href="https://drive.google.com/file/d/1LblKMIJ5FB-YUS5L7S6blKgnKRB33XpV/view?usp=sharing">Google Drive</a>, si desea descargarlo para importarlo localmente:</p>
 <pre class="r"><code># Importar datos localmente
 datos_full &lt;- read.table(file.choose(), header = T)</code></pre>
 <p>Para crear la muestra, siga lo siguientes pasos:</p>
@@ -39,19 +39,19 @@ clave &lt;- 21368123
 datos &lt;- muestra(clave)</code></pre>
 <p><code>clave</code> representa la semilla para generar <strong>siempre</strong> el mismo vector de números aleatorios. Esto garantiza que a todos nos funcione el ejercicio igual.</p>
 <p>En este ejercicio, vamos a trabajar con varios paquetes. Copie y pegue en su consola de <code>R</code> la siguiente líneas para instalarlos:</p>
-<pre class="r"><code>insinstall.packages(c(&quot;Rcmdr&quot;, &quot;RcmdrMisc&quot;, &quot;tidyverse&quot;))</code></pre>
+<pre class="r"><code>install.packages(c(&quot;Rcmdr&quot;, &quot;RcmdrMisc&quot;, &quot;tidyverse&quot;))</code></pre>
 <p>Ahora, puede cargar los paquetes. Ignore los <em>warnings</em> que le aparezcan.</p>
 <pre class="r"><code>library(RcmdrMisc)</code></pre>
 <pre><code>## Loading required package: car</code></pre>
 <pre><code>## Loading required package: carData</code></pre>
 <pre><code>## Loading required package: sandwich</code></pre>
 <pre class="r"><code>library(tidyverse)</code></pre>
-<pre><code>## -- Attaching packages --------------------------------------------------------------------------------------- tidyverse 1.3.0 --</code></pre>
+<pre><code>## -- Attaching packages ------------------------------------------------------------------------------------ tidyverse 1.3.0 --</code></pre>
 <pre><code>## v ggplot2 3.2.1     v dplyr   0.8.3
 ## v tibble  2.1.3     v stringr 1.4.0
 ## v tidyr   1.0.0     v forcats 0.4.0
 ## v purrr   0.3.3</code></pre>
-<pre><code>## -- Conflicts ------------------------------------------------------------------------------------------ tidyverse_conflicts() --
+<pre><code>## -- Conflicts --------------------------------------------------------------------------------------- tidyverse_conflicts() --
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()
 ## x dplyr::recode() masks car::recode()
@@ -62,6 +62,7 @@ datos &lt;- muestra(clave)</code></pre>
 <div id="preguntas" class="section level1">
 <h1>Preguntas</h1>
 <p>Usando la base de datos generada a partir de la muestra, responda a las siguientes preguntas:</p>
+<hr style="color: #0056b2;" />
 <ol style="list-style-type: decimal">
 <li>Para las variables MASA y ESTATURA, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información.</li>
 </ol>
@@ -100,7 +101,9 @@ with(datos, plot(density(ESTATURA),
                  main = &quot;&quot;, xlab = &quot;ESTATURA&quot;))  # genera gráfico de densidad</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>¿Existe sesgo?¿Hacia qué dirección?</p>
+<hr style="color: #0056b2;" />
 <p><strong>EJERCICIO</strong> Grafique en su consola de <code>R</code> las mismas figuras para la variable <strong>MASA</strong>.</p>
+<hr style="color: #0056b2;" />
 <ol start="2" style="list-style-type: decimal">
 <li>Para la variable ESTRATO, elabore una tabla de porcentajes y el respectivo gráfico. Comente los resultados obtenidos en el gráfico.</li>
 </ol>
@@ -112,7 +115,7 @@ with(datos, plot(density(ESTATURA),
 <pre class="r"><code>datos$ESTRATO &lt;- as.factor(datos$ESTRATO)
 levels(datos$ESTRATO)</code></pre>
 <pre><code>## [1] &quot;1&quot; &quot;2&quot; &quot;3&quot; &quot;4&quot; &quot;5&quot; &quot;6&quot;</code></pre>
-<p>con el método <code>levels</code> usted podrá ver las categorías correspondientes a la variable. Con la variable como factor, puede construir la tabla de frecuencia absoluta con <code>xtabs</code>:</p>
+<p>con la función <code>levels</code> usted podrá ver las categorías que pertenecen a las variables de tipo <code>factor</code>. Con la variable como factor, puede construir la tabla de frecuencia absoluta con <code>xtabs</code>:</p>
 <pre class="r"><code>xTabla_Estrato &lt;- xtabs(~ESTRATO, data = datos)
 xTabla_Estrato</code></pre>
 <pre><code>## ESTRATO
@@ -120,7 +123,7 @@ xTabla_Estrato</code></pre>
 ##  7 30 35  6  1  1</code></pre>
 <pre class="r"><code>class(xTabla_Estrato)</code></pre>
 <pre><code>## [1] &quot;xtabs&quot; &quot;table&quot;</code></pre>
-<p>o con la función <code>table</code>:</p>
+<p>Observe que la tabla es un objeto de clase <code>xtabs</code> y <code>tab</code>. Con la función <code>table</code> también puede construir la tabla de frecuencia absoluta:</p>
 <pre class="r"><code>Tabla_Estrato &lt;- table(datos$ESTRATO)
 Tabla_Estrato</code></pre>
 <pre><code>## 
@@ -128,19 +131,22 @@ Tabla_Estrato</code></pre>
 ##  7 30 35  6  1  1</code></pre>
 <pre class="r"><code>class(Tabla_Estrato)</code></pre>
 <pre><code>## [1] &quot;table&quot;</code></pre>
-<p>Los objetos <code>table</code> y <code>xtable</code> tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto <code>xtable</code>:</p>
+<p>La tabla es un objeto de clase<code>tab</code>. Los objetos <code>table</code> y <code>xtabs</code> tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto <code>xtable</code>:</p>
 <pre class="r"><code>Tabla_Porcentaje &lt;- xTabla_Estrato*100/nrow(datos)</code></pre>
 <p>Con la tabla construida, es posible realizar el gráfico correspondiente:</p>
 <pre class="r"><code>barplot(Tabla_Porcentaje, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia Relativa (%)&quot;, col = &quot;pink&quot;,
         main = &quot;Distribución del Estrato entre los estudiantes&quot;)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>¿Por qué? se realizó un gráfico de barras?</p>
+<hr style="color: #0056b2;" />
 <p><strong>EJERCICIO</strong> Grafique un diagrama de barras para la variable <strong>GENERO</strong>.</p>
+<hr style="color: #0056b2;" />
 <p>Alternativamente, puede utilizar la función del paquete <strong>Rcmdr</strong> para hacer un gráfico de barras:</p>
 <pre class="r"><code>with(datos, Barplot(ESTRATO, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia&quot;, col = &quot;lightblue&quot;,
                     main = &quot;Distribución del Estrato entre los estudiantes&quot;))</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p><code>barplot</code> (de <strong>graphics</strong>) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como <code>factor</code> o como <code>character</code>. Por otro lado, <code>Barplot</code> (de <strong>Rcmdr</strong>) recibe como argumento de entrada un vector de clase <code>factor</code>. Recuerde, el resultado obtenido con <code>Barplot</code> se puede replicar también en la interfaz de RCommander.</p>
+<hr style="color: #0056b2;" />
 <ol start="3" style="list-style-type: decimal">
 <li>Si se considera la variable ESTATURA, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.</li>
 </ol>
@@ -149,8 +155,13 @@ Tabla_Estrato</code></pre>
 boxplot(ESTATURA ~ GENERO, data = datos)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>¿Cómo se puede describir la distribución de la <strong>ESTATURA</strong> en hombres respecto a mujeres?</p>
+<hr style="color: #0056b2;" />
 <p><strong>EJERCICIO</strong> El gráfico anterior se generó con el paquete <strong>graphics</strong>, que está preinstalado en <code>R</code>. Grafique un boxplot en RCommander.</p>
-<p>La respuesta puede complementarse con otros gráficos descriptivos. <strong>Rcmdr</strong> permite graficar histogramas de forma simultánea, de acuerdo con las categorías de una variable cualitativa:</p>
+<hr style="color: #0056b2;" />
+<p>La respuesta puede complementarse con otros gráficos descriptivos, pero se debe ser cuidadoso con las <em>ilusiones gráficas</em>.</p>
+<div id="gráficas-simultáneas" class="section level2">
+<h2>Gráficas simultáneas</h2>
+<p><strong>Rcmdr</strong> permite graficar histogramas de forma simultánea, de acuerdo con las categorías de una variable cualitativa:</p>
 <pre class="r"><code># Con RCommander
 datos$GENERO &lt;- as.factor(datos$GENERO)
 H &lt;- with(datos, Hist(ESTATURA, groups = GENERO, scale = &quot;frequency&quot;, 
@@ -161,15 +172,15 @@ H &lt;- with(datos, Hist(ESTATURA, groups = GENERO, scale = &quot;frequency&quot
 <pre class="r"><code># Límites del histograma de &#39;Rcmdr&#39;
 H$MUJER$breaks</code></pre>
 <pre><code>## [1] 150.0000 156.6667 163.3333 170.0000 176.6667 183.3333 190.0000</code></pre>
-<p>Repliquemos este mismo tipo de gráfica con el paquete <strong>tidyverse</strong></p>
+<p>Repliquemos este mismo tipo de gráfica con el paquete <strong>ggplot2</strong> de <strong>tidyverse</strong>:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(binwidth = 0.7)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
-<p>En <strong>ggplot2</strong>, cada función que se aplica al <em>pipe</em> tiene argumentos de entrada que modifican el gráfico:</p>
+<p>En <strong>ggplot2</strong>, cada función que se aplica tiene argumentos de entrada que modifican el gráfico:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = &quot;black&quot;, fill = &quot;pink&quot;, breaks = seq(150, 180, by = 5))</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
-<p>A su vez, cada operación que se aplica al <em>pipe</em> va modificando el gráfico. Por ejemplo, <code>facet_grid</code> es una función que genera dos gráficos según la variable categórica de agrupación que se especifique:</p>
+<p>A su vez, cada función que adicione va modificando el gráfico. Por ejemplo, <code>facet_grid</code> es una función que genera dos gráficos según la variable categórica de agrupación que se especifique:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = &quot;black&quot;, fill = &quot;pink&quot;, breaks = seq(150, 180, by = 5)) + 
   facet_grid(. ~ GENERO)</code></pre>
@@ -177,14 +188,19 @@ H$MUJER$breaks</code></pre>
 <p><code>theme_bw</code> cambia el fondo del gráfico:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = &quot;black&quot;, fill = &quot;pink&quot;, breaks = seq(150, 180, by = 5)) + 
-  facet_grid(. ~ GENERO) +  theme_bw()</code></pre>
+  facet_grid(. ~ GENERO) +  theme_bw() + ggtitle(&quot;Gráficas simultáneas&quot;) +
+  theme(plot.title = element_text(hjust = 0.5))</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 <p>De forma similar, se pueden graficar las densidades:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_density() + 
-  theme_bw() + facet_grid(. ~ GENERO)</code></pre>
+  theme_bw() + facet_grid(. ~ GENERO) + ggtitle(&quot;Gráficas simultáneas&quot;) + 
+  theme(plot.title = element_text(hjust = 0.5))</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
-<p>Sea con <strong>Rcmdr</strong> o con <strong>ggplot2</strong>, se forzó a ambas categorías de <strong>GENERO</strong> tuvieran los mismos intervalos de clase. Ahora, grafiquemos de manera independiente:</p>
+</div>
+<div id="gráficas-separadas" class="section level2">
+<h2>Gráficas separadas</h2>
+<p>Sea con <strong>Rcmdr</strong> o con <strong>ggplot2</strong>, se forzó a que ambas categorías de <strong>GENERO</strong> tuvieran los mismos intervalos de clase. Ahora, grafiquemos de manera independiente:</p>
 <pre class="r"><code>datosF &lt;- datos %&gt;% filter(GENERO == &quot;MUJER&quot;)  # Filtramos la distribución de mujeres
 datosM &lt;- datos %&gt;% filter(GENERO == &quot;HOMBRE&quot;) # Filtramos la distribución de hombres
 
@@ -201,12 +217,17 @@ print(&quot;MUJERES&quot;)</code></pre>
                   &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;), quantiles=c(0,.25,.5,.75,1))</code></pre>
 <pre><code>##      mean       sd  IQR  0%    25%   50%    75% 100%  n
 ##  173.9074 6.513465 11.5 161 168.25 173.5 179.75  187 54</code></pre>
-<pre class="r"><code>par(mfrow = c(1,2))
-with(datosM, hist(ESTATURA, main = &quot;&quot;))
-with(datosF, hist(ESTATURA, main = &quot;&quot;))</code></pre>
+<pre class="r"><code>par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
+with(datosM, hist(ESTATURA, main = &quot;Distribución de hombres&quot;, 
+                  ylab = &quot;Frecuencia&quot;))
+with(datosF, hist(ESTATURA, main = &quot;Distribución de mujeres&quot;, 
+                  ylab = &quot;Frecuencia&quot;))
+mtext(&quot;Gráficas separadas&quot;, outer = TRUE, cex = 1.2)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
-<p>¿Son coherentes las gráficas independientes con las simultáneas?</p>
-<p><strong>EJERCICIO</strong> Replique la graficacación simultánea e independiente con la variable <strong>MASA</strong>.</p>
+<p>Compare la distribución de los hombres de las gráficas simultáneas con la distribución de las gráficas separadas. ¿Son coherentes las gráficas independientes con las simultáneas?</p>
+<hr style="color: #0056b2;" />
+<p><strong>EJERCICIO</strong> Repita la graficacación simultánea y separada con la variable <strong>MASA</strong>, y compare.</p>
+<hr style="color: #0056b2;" />
 <ol start="4" style="list-style-type: decimal">
 <li>¿Es la MASA promedio de los que fuman inferior a la MASA promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas.</li>
 </ol>
@@ -227,6 +248,7 @@ Boxplot(MASA~FUMA, data=datos, id=list(method=&quot;y&quot;))</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
 <pre><code>## [1] &quot;28&quot; &quot;44&quot; &quot;71&quot;</code></pre>
 <p>Concluya bajo el contexto de la información.</p>
+<hr style="color: #0056b2;" />
 <ol start="5" style="list-style-type: decimal">
 <li>¿Se puede afirmar que el porcentaje de personas que Fuman es mayor en Hombres que en Mujeres? Justifique su respuesta.</li>
 </ol>
@@ -239,10 +261,12 @@ Porcentajes</code></pre>
 ## SI       7.5   0.0   7.5
 ## Total   67.5  32.5 100.0</code></pre>
 <p>¿Por qué razón se sabe claramente que esta pregunta se responde con este tipo de tabla?</p>
+<hr style="color: #0056b2;" />
 <p><strong>BONUS</strong> La tabla de contingencia también se puede representar graficamente:</p>
 <pre class="r"><code>barplot(t(Porcentajes[1:2,1:2]), beside = T, col = 3:4, xlab = &quot;Fuma&quot;, ylab = &quot;Frecuencia (%)&quot;)
 legend(&quot;topright&quot;, legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<hr style="color: #0056b2;" />
 <ol start="6" style="list-style-type: decimal">
 <li>¿Qué cantidad de estudiantes tienen una estatura igual o menor a 170 cm? ¿Qué porcentaje representan?</li>
 </ol>
@@ -264,9 +288,12 @@ legend(&quot;topright&quot;, legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4
 ## 8  185 0.9875
 ## 9  190 1.0000
 ## 10 195 1.0000</code></pre>
+<hr style="color: #0056b2;" />
 <p>También puede construir una tabla frecuencias. Puede hacerlo revisando el siguiente <a href="https://www.r-tutor.com/elementary-statistics/quantitative-data/frequency-distribution-quantitative-data">enlace</a></p>
+<hr style="color: #0056b2;" />
 <ol start="7" style="list-style-type: decimal">
 <li>¿Qué porcentaje de estudiantes mujeres tienen una MASA mayor a 55 kg?</li>
 </ol>
-<p><em>Basado en el procedimiento de la pregunta anterior, responda esta.</em></p>
+<p><em>Basado en el procedimiento de la pregunta anterior, responda ésta.</em></p>
+</div>
 </div>
