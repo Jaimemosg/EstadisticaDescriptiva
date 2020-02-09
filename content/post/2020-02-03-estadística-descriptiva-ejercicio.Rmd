@@ -38,7 +38,7 @@ library(readr)
 datos_full <- read_table2(myURL)
 ```
 
-Para crear la muestra, siga lo siguientes pasos:
+Para crear la muestra, ejecute las siguientes líneas:
 
 ```{r}
 # Función para extraer la muestra
@@ -58,7 +58,7 @@ datos <- muestra(clave)
 En este ejercicio, vamos a trabajar con varios paquetes. Copie y pegue en su consola de `R` la siguiente líneas para instalarlos:
 
 ```{r, eval=FALSE}
-install.packages(c("Rcmdr", "RcmdrMisc", "tidyverse"))
+install.packages(c("Rcmdr", "RcmdrMisc", "tidyverse", "agricolae"))
 ```
 
 Ahora, puede cargar los paquetes. Ignore los _warnings_ que le aparezcan.
@@ -154,7 +154,7 @@ Tabla_Estrato
 class(Tabla_Estrato)
 ```
 
-La tabla es un objeto de clase _table_. Los objetos `table` y `xtabs` tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto `xtable`:
+La tabla es un objeto de clase _table_. Los objetos de clase _table_ y _xtabs_ tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto `xtable`:
 
 ```{r}
 Tabla_Porcentaje <- xTabla_Estrato*100/nrow(datos)
@@ -167,7 +167,7 @@ barplot(Tabla_Porcentaje, xlab = "Estrato", ylab = "Frecuencia Relativa (%)", co
         main = "Distribución del Estrato entre los estudiantes")
 ```
 
-¿Por qué? se realizó un gráfico de barras?
+¿Por qué se realizó un gráfico de barras?
 
 <hr style="color: #0056b2;" />
 
@@ -364,6 +364,6 @@ También puede construir una tabla frecuencias. Puede hacerlo revisando el sigui
 
 <hr style="color: #0056b2;" />
 
-7. ¿Qué porcentaje de estudiantes mujeres tienen una MASA mayor a 55 kg?
+_Sobre la base del procedimiento de la pregunta anterior, responda la siguiente:_
 
-_Basado en el procedimiento de la pregunta anterior, responda ésta._
+7. ¿Qué porcentaje de estudiantes mujeres tienen una MASA mayor a 55 kg?

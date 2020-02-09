@@ -88,7 +88,7 @@ datos_full &lt;- read_table2(myURL)</code></pre>
 <p>También está disponible en <a href="https://drive.google.com/file/d/1LblKMIJ5FB-YUS5L7S6blKgnKRB33XpV/view?usp=sharing">Google Drive</a>, si desea descargarlo para importarlo localmente:</p>
 <pre class="r"><code># Importar datos localmente
 datos_full &lt;- read.table(file.choose(), header = T)</code></pre>
-<p>Para crear la muestra, siga lo siguientes pasos:</p>
+<p>Para crear la muestra, ejecute las siguientes líneas:</p>
 <pre class="r"><code># Función para extraer la muestra
 muestra &lt;- function(clave){
 set.seed(clave)
@@ -193,13 +193,13 @@ Tabla_Estrato</code></pre>
 ##  7 30 35  6  1  1</code></pre>
 <pre class="r"><code>class(Tabla_Estrato)</code></pre>
 <pre><code>## [1] &quot;table&quot;</code></pre>
-<p>La tabla es un objeto de clase <em>table</em>. Los objetos <code>table</code> y <code>xtabs</code> tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto <code>xtable</code>:</p>
+<p>La tabla es un objeto de clase <em>table</em>. Los objetos de clase <em>table</em> y <em>xtabs</em> tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto <code>xtable</code>:</p>
 <pre class="r"><code>Tabla_Porcentaje &lt;- xTabla_Estrato*100/nrow(datos)</code></pre>
 <p>Con la tabla construida, es posible realizar el gráfico correspondiente:</p>
 <pre class="r"><code>barplot(Tabla_Porcentaje, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia Relativa (%)&quot;, col = &quot;pink&quot;,
         main = &quot;Distribución del Estrato entre los estudiantes&quot;)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
-<p>¿Por qué? se realizó un gráfico de barras?</p>
+<p>¿Por qué se realizó un gráfico de barras?</p>
 <hr style="color: #0056b2;" />
 <p><strong>EJERCICIO</strong> Grafique un diagrama de barras para la variable <strong>GENERO</strong>.</p>
 <hr style="color: #0056b2;" />
@@ -353,10 +353,10 @@ legend(&quot;topright&quot;, legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4
 <hr style="color: #0056b2;" />
 <p>También puede construir una tabla frecuencias. Puede hacerlo revisando el siguiente <a href="https://www.r-tutor.com/elementary-statistics/quantitative-data/frequency-distribution-quantitative-data">enlace</a></p>
 <hr style="color: #0056b2;" />
+<p><em>Sobre la base del procedimiento de la pregunta anterior, responda la siguiente:</em></p>
 <ol start="7" style="list-style-type: decimal">
 <li>¿Qué porcentaje de estudiantes mujeres tienen una MASA mayor a 55 kg?</li>
 </ol>
-<p><em>Basado en el procedimiento de la pregunta anterior, responda ésta.</em></p>
 </div>
 </div>
 
