@@ -80,7 +80,7 @@ Usando la base de datos generada a partir de la muestra, responda a las siguient
 
 <hr style="color: #0056b2;" />
 
-1. Para las variables MASA y ESTATURA, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información.
+1. Para las variables **MASA** y **ESTATURA**, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información.
 
 Dentro del paquete **base**, `R` posee una función que calcula algunos estadísticos descriptivos:
 
@@ -119,7 +119,7 @@ with(datos, plot(density(ESTATURA),
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO** Grafique en su consola de `R` las mismas figuras para la variable **MASA**.
+**EJERCICIO:** Grafique en su consola de `R` las mismas figuras para la variable **MASA**.
 
 <hr style="color: #0056b2;" />
 
@@ -139,7 +139,7 @@ levels(datos$ESTRATO)
 ```
 
 con la función `levels` usted podrá ver las categorías que pertenecen a las variables de tipo _factor_. Con la variable como factor, puede construir la tabla de frecuencia absoluta con `xtabs`:
-
+  
 ```{r}
 xTabla_Estrato <- xtabs(~ESTRATO, data = datos)
 xTabla_Estrato
@@ -171,7 +171,7 @@ barplot(Tabla_Porcentaje, xlab = "Estrato", ylab = "Frecuencia Relativa (%)", co
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO** Grafique un diagrama de barras para la variable **GENERO**.
+**EJERCICIO:** Grafique un diagrama de barras para la variable **GENERO**.
 
 <hr style="color: #0056b2;" />
 
@@ -186,7 +186,7 @@ with(datos, Barplot(ESTRATO, xlab = "Estrato", ylab = "Frecuencia", col = "light
 
 <hr style="color: #0056b2;" />
 
-3. Si se considera la variable ESTATURA, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.
+3. Si se considera la variable **ESTATURA**, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.
 
 El _boxplot_ muestra el comportamiento de la distribución de datos, agrupada en las categorías que se especifiquen. Veamos:
 
@@ -199,7 +199,7 @@ boxplot(ESTATURA ~ GENERO, data = datos)
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un boxplot en RCommander.
+**EJERCICIO:** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un boxplot en RCommander.
 
 <hr style="color: #0056b2;" />
 
@@ -292,11 +292,11 @@ Compare la distribución de los hombres de las gráficas simultáneas con la dis
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO** Repita la graficacación simultánea y separada con la variable **MASA**, y compare.
+**EJERCICIO:** Repita la graficacación simultánea y separada con la variable **MASA**, y compare.
 
 <hr style="color: #0056b2;" />
 
-4. ¿Es la MASA promedio de los que fuman inferior a la MASA promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas.
+4. ¿Es la **MASA** promedio de los que fuman inferior a la **MASA** promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas.
 
 Los estadísticos descriptivos son útiles para responder la primera pregunta:
 
