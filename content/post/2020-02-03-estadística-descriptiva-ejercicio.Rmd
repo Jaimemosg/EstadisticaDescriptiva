@@ -1,7 +1,7 @@
 ---
 title: Estadística descriptiva en R
 author: Jaime Mosquera Gutiérrez
-date: '2020-02-03'
+date: '2020-10-03'
 slug: estadística-descriptiva-ejercicio
 categories: [Estadística descriptiva]
 tags: []
@@ -119,7 +119,7 @@ with(datos, plot(density(ESTATURA),
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO:** Grafique en su consola de `R` las mismas figuras para la variable **MASA**.
+**EJERCICIO 1:** Grafique en su consola de `R` las mismas figuras para la variable **MASA**.
 
 <hr style="color: #0056b2;" />
 
@@ -171,7 +171,7 @@ barplot(Tabla_Porcentaje, xlab = "Estrato", ylab = "Frecuencia Relativa (%)", co
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO:** Grafique un diagrama de barras para la variable **GENERO**.
+**EJERCICIO 2:** Grafique un diagrama de barras para la variable **GENERO**.
 
 <hr style="color: #0056b2;" />
 
@@ -199,7 +199,7 @@ boxplot(ESTATURA ~ GENERO, data = datos)
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO:** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un boxplot en RCommander.
+**EJERCICIO 3:** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un boxplot en RCommander.
 
 <hr style="color: #0056b2;" />
 
@@ -292,7 +292,7 @@ Compare la distribución de los hombres de las gráficas simultáneas con la dis
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO:** Repita la graficacación simultánea y separada con la variable **MASA**, y compare.
+**EJERCICIO 4:** Repita la graficacación simultánea y separada con la variable **MASA**, y compare.
 
 <hr style="color: #0056b2;" />
 

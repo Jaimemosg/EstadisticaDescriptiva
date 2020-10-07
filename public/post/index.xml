@@ -6,19 +6,29 @@
     <description>Recent content in Posts on Blog de Jaime</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Mon, 03 Feb 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 03 Oct 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Estadística descriptiva en R</title>
-      <link>/2020/02/03/estad%C3%ADstica-descriptiva-ejercicio/</link>
-      <pubDate>Mon, 03 Feb 2020 00:00:00 +0000</pubDate>
+      <link>/2020/10/03/estad%C3%ADstica-descriptiva-ejercicio/</link>
+      <pubDate>Sat, 03 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/02/03/estad%C3%ADstica-descriptiva-ejercicio/</guid>
+      <guid>/2020/10/03/estad%C3%ADstica-descriptiva-ejercicio/</guid>
       <description>Datos de los estudiantesEn este ejercicio vamos a trabajar con una muestra aleatoria de una gran base de datos. La base original corresponde a la información de 202 estudiantes de la Universidad de Antioquia. Dicha base contiene las variables: MASA (en kg), ESTATURA (en cm. del estudiante), GENERO (HOMBRE o MUJER), ESTRATO y FUMA (SI o NO).
 Extracción de la muestraVamos a extraer una muestra de tamaño 80 de la base de datos original.</description>
+    </item>
+    
+    <item>
+      <title>Estadística desciptiva en Python</title>
+      <link>/2020/02/10/estad%C3%ADstica-desciptiva-en-python/</link>
+      <pubDate>Mon, 10 Feb 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/02/10/estad%C3%ADstica-desciptiva-en-python/</guid>
+      <description>Estadística Descriptiva en PythonDatos de los estudiantesEste es el mismo ejercicio de la sesión anterior. En esta ocasión, dejamos de lado R, para explorar algunas herramientas disponibles en Python.
+De nuevo, vamos a trabajar con una muestra aleatoria de una gran base de datos. La base original corresponde a la información de 202 estudiantes de la Universidad de Antioquia. Dicha base contiene las variables: MASA (en kg), ESTATURA (en cm.</description>
     </item>
     
   </channel>

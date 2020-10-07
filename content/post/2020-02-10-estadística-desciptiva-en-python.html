@@ -1,0 +1,150 @@
+---
+title: Estadística desciptiva en Python
+author: ''
+date: '2020-02-10'
+slug: estadística-desciptiva-en-python
+categories:
+  - Estadística descriptiva
+tags: []
+---
+
+
+
+<div id="estadística-descriptiva-en-python" class="section level1">
+<h1><strong>Estadística Descriptiva en Python</strong></h1>
+<div id="datos-de-los-estudiantes" class="section level2">
+<h2>Datos de los estudiantes</h2>
+<p>Este es el mismo ejercicio de la sesión anterior. En esta ocasión, dejamos de lado <code>R</code>, para explorar algunas herramientas disponibles en <code>Python</code>.</p>
+<p>De nuevo, vamos a trabajar con una muestra aleatoria de una <em>gran</em> base de datos. La base original corresponde a la información de 202 estudiantes de la Universidad de Antioquia. Dicha base contiene las variables: MASA (en kg), <strong>ESTATURA</strong> (en cm. del estudiante), <strong>GENERO</strong> (HOMBRE o MUJER), <strong>ESTRATO</strong> y <strong>FUMA</strong> (SI o NO).<br/><br/></p>
+<p>Antes de continuar, vamos a instalar y cargar en este <em>notebook</em> los paquetes necesarios. Cada una de las celdas de código las puede ir corriendo a medida que va avanzando:</p>
+<p><strong>Sitio en construcción</strong></p>
+<!-- ```{python} -->
+<!-- import pandas as pd -->
+<!-- import random as rd -->
+<!-- import seaborn as sns -->
+<!-- import numpy as np -->
+<!-- import matplotlib.pyplot as plt -->
+<!-- import scipy.stats as st -->
+<!-- ``` -->
+<!-- # Extracción de la muestra -->
+<!-- Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo `datos_taller.txt`. el cual puede descargarlos directamente desde un repositorio de Git Hub: -->
+<!-- myURL = "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt" -->
+<!-- datos_full = pd.read_csv(myURL, sep = ' ') -->
+<!-- Para crear la muestra, cree una función ejecutando las siguientes líneas: -->
+<!-- # Función para extraer la muestra -->
+<!-- def muestra(clave): -->
+<!--    rd.seed(clave) -->
+<!--    data = datos_full.iloc[rd.sample(range(200), k = 80)] -->
+<!--    return(data) -->
+<!-- # Para crear la base de datos, ejecutamos la función -->
+<!-- clave = 32057368 -->
+<!-- datos = muestra(clave) -->
+<!-- # Vamos a verificar imprimiendo una fracción del data frame -->
+<!-- datos.head(10) -->
+<!-- `clave` representa la semilla para generar **siempre** el mismo vector de números aleatorios. Esto garantiza que a todos nos funcione el ejercicio igual. -->
+<!-- # Preguntas -->
+<!-- Usando la base de datos generada a partir de la muestra, responda a las siguientes preguntas: -->
+<!-- --- -->
+<!-- 1. Para las variables **MASA** y **ESTATURA**, calcule: Media, Mediana y desviación estándar e interprete sus resultados en el contexto de la información. -->
+<!-- Bajo `Pandas`, los data frame que se crean son objetos. En `Python`, los métodos asociados a una clase se invocan usando la notación `<objeto>.<método>`. Para calcular algunas medidas descriptivas, se puede utilizar el método `.describe()`: -->
+<!-- datos['ESTATURA'].describe() -->
+<!-- Concluya bajo el contexto de la información. -->
+<!-- A continuación, vamos a graficar la distribución de los datos de la **ESTATURA** con el paquete **seaborn**: -->
+<!-- sns.distplot(datos.ESTATURA, rug = True); -->
+<!-- El mismo gráfico, un poco más personalizado, se puede generar utilizando otros argumentos de la función `distplot`: -->
+<!-- sns.distplot(datos.ESTATURA, hist=True, kde=True,  -->
+<!--              color = 'darkblue',  -->
+<!--              hist_kws={'edgecolor':'black'}, -->
+<!--              kde_kws={'linewidth': 4}); -->
+<!-- plt.xlabel('ESTATURA (m)'); -->
+<!-- plt.ylabel('Densidad'); -->
+<!-- También lo podemos graficar con las funciones de **matplotlib**: -->
+<!-- bins = [150, 155, 160, 165, 170, 175, 180] -->
+<!-- plt.hist(datos['ESTATURA'], bins, color='blue', edgecolor='black'); -->
+<!-- plt.xlabel('ESTATURA (m)'); -->
+<!-- plt.ylabel('Frecuencia'); -->
+<!-- ¿Existe sesgo?¿Hacia qué dirección? -->
+<!-- --- -->
+<!-- **EJERCICIO:** Grafique las mismas figuras para la variable **MASA** en la siguiente celda de código: -->
+<!-- # Realice el histograma y la gráfica de densidad -->
+<!-- --- -->
+<!-- 2. Para la variable **ESTRATO**, elabore una tabla de porcentajes y el respectivo gráfico. Comente los resultados obtenidos en el gráfico. -->
+<!-- Con **Pandas** es posible realizar una tabla de frecuencias a partir de conteos: -->
+<!-- Tabla1 = datos['ESTRATO'].value_counts().to_frame() -->
+<!-- Tabla1 -->
+<!-- Debajo de la palabra _ESTRATO_ , al frente de cada etiqueta (número) en negrilla, aparece el conteo. Como se puede observar, los estratos no aparecen ordenados. -->
+<!-- La tabla de porcentajes se puede obtener aplicando una operación para calcular el porcentaje. Para ello, se debe usar el método `.apply()`, cuyo argumento de entrada es una función `lambda` correspondiente a la conversión al porcentaje. -->
+<!-- Tabla2 = datos['ESTRATO'].value_counts().to_frame().apply(lambda r: r*100/r.sum()) -->
+<!-- Tabla2 -->
+<!-- Para mayor información sobre funciones `lambda`, visite [este enlace](https://recursospython.com/guias-y-manuales/funciones-lambda/). -->
+<!-- Otra forma de realiar la tabla es usando la función de tablas cruzadas, pero haciendo uso de una sola variable (análogo a como se hizo en `R`): -->
+<!-- Tabla3 = pd.crosstab(datos['ESTRATO'], columns='count'); -->
+<!-- Tabla3 -->
+<!-- Y se realiza la conversión a porcentaje de forma análoga: -->
+<!-- Tabla3 = pd.crosstab(datos['ESTRATO'],  -->
+<!--                      columns='counts').apply(lambda r: r*100/r.sum()); -->
+<!-- Tabla3 -->
+<!-- Esta tabla se puede representar por medio de un diagrama de barras, del paquete **Pandas**: -->
+<!-- bars = Tabla2.plot(kind='bar', color='g'); -->
+<!-- bars.set_xlabel("Estrato"); -->
+<!-- bars.set_ylabel("Frecuencia relativa"); -->
+<!-- Con **seaborn** también se pueden graficar este tipo de variables. Esta función grafica a partir de hacer un conteo directamente en el _data frame_: -->
+<!-- sns.catplot(x="ESTRATO", kind="count", data=datos); -->
+<!-- ¿Por qué se realizó un gráfico de barras? -->
+<!-- --- -->
+<!-- **EJERCICIO:** Grafique un diagrama de barras para la variable **GENERO**. -->
+<!-- # Realice aquí el diagrama de barras -->
+<!-- --- -->
+<!-- 3. Si se considera la variable **ESTATURA**, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada. -->
+<!-- El _boxplot_ muestra el comportamiento de la distribución de datos, agrupada en las categorías que se especifiquen. Veamos el que genera el paquete **seaborn**: -->
+<!-- sns.boxplot(x="GENERO" , y="ESTATURA", data=datos); -->
+<!-- Esta función incluso permite realizar el boxplot considerando una tercera variable: -->
+<!-- sns.boxplot(x="GENERO" , y="ESTATURA", hue = "ESTRATO", data=datos); -->
+<!-- datos.boxplot("ESTATURA", by="GENERO", grid=False); -->
+<!-- ¿Cómo se puede describir la distribución de la **ESTATURA** en hombres respecto a mujeres? -->
+<!-- --- -->
+<!-- **EJERCICIO:** Grafique un _boxplot_ para la variable **MASA**. -->
+<!-- # Realice aquí el boxplot -->
+<!-- --- -->
+<!-- 4. ¿Es la **MASA** promedio de los que fuman inferior a la **MASA** promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas. -->
+<!-- Los estadísticos descriptivos son útiles para responder la primera pregunta: -->
+<!-- datos['ESTATURA'].describe() -->
+<!-- Además, se puede representar el promedio gráficamente con un gráfico de barras: -->
+<!-- sns.barplot(x="GENERO", y="ESTATURA", data=datos); -->
+<!-- A continuación, calculemos la media y el error estándar: -->
+<!-- media_genero = datos.groupby(['GENERO']).mean() -->
+<!-- media_genero -->
+<!-- stderr_genero = datos.groupby(['GENERO']).sem() -->
+<!-- stderr_genero -->
+<!-- Puede utilizar **seaborn** para crear un gráfico con líneas: -->
+<!-- sns.pointplot(x="GENERO", y="ESTATURA", data=datos, ci="sd"); -->
+<!-- 5. ¿Se puede afirmar que el porcentaje de personas que Fuman es mayor en Hombres que en Mujeres? Justifique su respuesta. -->
+<!-- Basta con realizar una tabla de contingencia para responder esta pregunta: -->
+<!-- Otra_tabla = pd.crosstab(datos['GENERO'], datos['FUMA'], normalize='index'); -->
+<!-- Otra_tabla = Otra_tabla.round(4)*100 -->
+<!-- En el fragmento de código anterior, el método `round()` redondea a 4 decimales. El data frame, al tener solo valores numéricos, admite ser multiplicado por 100 para convertir en porcentaje.<br/><br/> -->
+<!-- ¿Por qué razón se sabe claramente que esta pregunta se responde con este tipo de tabla? -->
+<!-- --- -->
+<!-- **BONUS** La tabla de contingencia también se puede representar graficamente. A continuación, se lustra con pandas: -->
+<!-- bar2 = Otra_tabla.plot(kind='bar') -->
+<!-- bar2.set_xlabel("Género"); -->
+<!-- bar2.set_ylabel("Frecuencia relativa"); -->
+<!-- --- -->
+<!-- 6. ¿Qué cantidad de estudiantes tienen una estatura igual o menor a 170 cm? ¿Qué porcentaje representan? -->
+<!-- La pregunta pregunta por los datos _iguales o menores a..._. Esto es un indicativo de que se puede responder sobre la base de la frecuencia acumulada. La tabla de frecuencias se puede realizar con **Pandas** así: -->
+<!-- bins = [150, 155, 160, 165, 170, 175, 180] -->
+<!-- pd.cut(datos['ESTATURA'], bins, right=False).value_counts() -->
+<!-- Se cuentan 37 personas que cumplen la condición. Compare esta tabla con el histograma de la estatura. <br/><br/> -->
+<!-- Por otro lado, resulta útil graficar la _ojiva_: -->
+<!-- counts, bins, patches = plt.hist(datos['ESTATURA'], bins); -->
+<!-- plt.clf(); -->
+<!-- intervals  = np.array(list(map(list, zip(bins[:-1], bins[1:])))) -->
+<!-- bin_centers = np.mean(intervals, axis=1) -->
+<!-- plt.plot(bin_centers, counts.cumsum(), 'ro-') -->
+<!-- plt.xlabel('ESTATURA (m)'); -->
+<!-- plt.ylabel('Frecuencia acumulada'); -->
+<!-- _Sobre la base del procedimiento de la pregunta anterior, responda la siguiente:_ -->
+<!-- 7. ¿Qué porcentaje de estudiantes mujeres tienen una MASA mayor a 55 kg? -->
+<!-- # Relice aqui la solución del numeral 7 -->
+</div>
+</div>

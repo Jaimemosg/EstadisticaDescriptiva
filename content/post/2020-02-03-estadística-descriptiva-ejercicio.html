@@ -1,7 +1,7 @@
 ---
 title: Estadística descriptiva en R
 author: Jaime Mosquera Gutiérrez
-date: '2020-02-03'
+date: '2020-10-03'
 slug: estadística-descriptiva-ejercicio
 categories: [Estadística descriptiva]
 tags: []
@@ -102,7 +102,7 @@ with(datos, plot(density(ESTATURA),
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <p>¿Existe sesgo?¿Hacia qué dirección?</p>
 <hr style="color: #0056b2;" />
-<p><strong>EJERCICIO:</strong> Grafique en su consola de <code>R</code> las mismas figuras para la variable <strong>MASA</strong>.</p>
+<p><strong>EJERCICIO 1:</strong> Grafique en su consola de <code>R</code> las mismas figuras para la variable <strong>MASA</strong>.</p>
 <hr style="color: #0056b2;" />
 <ol start="2" style="list-style-type: decimal">
 <li>Para la variable <strong>ESTRATO</strong>, elabore una tabla de porcentajes y el respectivo gráfico. Comente los resultados obtenidos en el gráfico.</li>
@@ -139,7 +139,7 @@ Tabla_Estrato</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>¿Por qué se realizó un gráfico de barras?</p>
 <hr style="color: #0056b2;" />
-<p><strong>EJERCICIO:</strong> Grafique un diagrama de barras para la variable <strong>GENERO</strong>.</p>
+<p><strong>EJERCICIO 2:</strong> Grafique un diagrama de barras para la variable <strong>GENERO</strong>.</p>
 <hr style="color: #0056b2;" />
 <p>Alternativamente, puede utilizar la función del paquete <strong>Rcmdr</strong> para hacer un gráfico de barras:</p>
 <pre class="r"><code>with(datos, Barplot(ESTRATO, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia&quot;, col = &quot;lightblue&quot;,
@@ -156,7 +156,7 @@ boxplot(ESTATURA ~ GENERO, data = datos)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>¿Cómo se puede describir la distribución de la <strong>ESTATURA</strong> en hombres respecto a mujeres?</p>
 <hr style="color: #0056b2;" />
-<p><strong>EJERCICIO:</strong> El gráfico anterior se generó con el paquete <strong>graphics</strong>, que está preinstalado en <code>R</code>. Grafique un boxplot en RCommander.</p>
+<p><strong>EJERCICIO 3:</strong> El gráfico anterior se generó con el paquete <strong>graphics</strong>, que está preinstalado en <code>R</code>. Grafique un boxplot en RCommander.</p>
 <hr style="color: #0056b2;" />
 <p>La respuesta puede complementarse con otros gráficos descriptivos, pero se debe ser cuidadoso con las <em>ilusiones gráficas</em>.</p>
 <div id="gráficas-simultáneas" class="section level2">
@@ -226,7 +226,7 @@ mtext(&quot;Gráficas separadas&quot;, outer = TRUE, cex = 1.2)</code></pre>
 <p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
 <p>Compare la distribución de los hombres de las gráficas simultáneas con la distribución de las gráficas separadas. ¿Son coherentes las gráficas independientes con las simultáneas?</p>
 <hr style="color: #0056b2;" />
-<p><strong>EJERCICIO:</strong> Repita la graficacación simultánea y separada con la variable <strong>MASA</strong>, y compare.</p>
+<p><strong>EJERCICIO 4:</strong> Repita la graficacación simultánea y separada con la variable <strong>MASA</strong>, y compare.</p>
 <hr style="color: #0056b2;" />
 <ol start="4" style="list-style-type: decimal">
 <li>¿Es la <strong>MASA</strong> promedio de los que fuman inferior a la <strong>MASA</strong> promedio de los que no fuman? ¿Existen datos atípicos? ¿Cómo se interpretan estos? Justifique sus respuestas con gráficos y tablas.</li>
