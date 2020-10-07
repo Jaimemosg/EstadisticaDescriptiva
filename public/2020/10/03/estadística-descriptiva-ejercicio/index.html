@@ -92,7 +92,7 @@ datos_full &lt;- read.table(file.choose(), header = T)</code></pre>
 <pre class="r"><code># Función para extraer la muestra
 muestra &lt;- function(clave){
 set.seed(clave)
-data &lt;- datos_full[sample(1:200,80),]
+data &lt;- datos_full[sample(1:202,80),]
 return(data)
 }
 
@@ -118,8 +118,10 @@ datos &lt;- muestra(clave)</code></pre>
 ## x dplyr::lag()    masks stats::lag()
 ## x dplyr::recode() masks car::recode()
 ## x purrr::some()   masks car::some()</code></pre>
-<p>Los paquetes anteriores son útiles para trabajar con líneas de código dentro de un script. Si desea apoyarse con la incerfaz de RCommander (recomendable), cargue el paquete que abre dicha interfaz:</p>
-<pre class="r"><code>library(Rcmdr)</code></pre>
+<!-- Los paquetes anteriores son útiles para trabajar con líneas de código dentro de un script. Si desea apoyarse con la incerfaz de RCommander (recomendable), cargue el paquete que abre dicha interfaz: -->
+<!-- ```{r, eval=FALSE} -->
+<!-- library(Rcmdr) -->
+<!-- ``` -->
 </div>
 <div id="preguntas" class="section level1">
 <h1>Preguntas</h1>
@@ -132,11 +134,11 @@ datos &lt;- muestra(clave)</code></pre>
 <pre class="r"><code># Resumen numérico del paquete Base
 summary(datos)</code></pre>
 <pre><code>##       MASA          ESTATURA        GENERO             ESTRATO     
-##  Min.   :40.00   Min.   :150.0   Length:80          Min.   :1.000  
-##  1st Qu.:55.75   1st Qu.:163.8   Class :character   1st Qu.:2.000  
-##  Median :63.50   Median :170.0   Mode  :character   Median :3.000  
-##  Mean   :63.48   Mean   :169.8                      Mean   :2.587  
-##  3rd Qu.:68.50   3rd Qu.:176.2                      3rd Qu.:3.000  
+##  Min.   :45.00   Min.   :150.0   Length:80          Min.   :1.000  
+##  1st Qu.:57.75   1st Qu.:164.8   Class :character   1st Qu.:2.000  
+##  Median :64.00   Median :171.0   Mode  :character   Median :2.000  
+##  Mean   :64.80   Mean   :170.5                      Mean   :2.562  
+##  3rd Qu.:70.25   3rd Qu.:177.2                      3rd Qu.:3.000  
 ##  Max.   :90.00   Max.   :187.0                      Max.   :6.000  
 ##      FUMA          
 ##  Length:80         
@@ -145,13 +147,13 @@ summary(datos)</code></pre>
 ##                    
 ##                    
 ## </code></pre>
-<p>Por otro lado, <strong>RCommander</strong> tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:</p>
+<p>Por otro lado, <strong>RcmdrMisc</strong> (RCommander) tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:</p>
 <pre class="r"><code># Resumen numérico con RCommander
 numSummary(datos[,c(&quot;ESTATURA&quot;, &quot;MASA&quot;), drop=FALSE], statistics=c(&quot;mean&quot;, 
            &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;), quantiles=c(0,.25,.5,.75,1))</code></pre>
-<pre><code>##               mean        sd   IQR  0%    25%   50%    75% 100%  n
-## ESTATURA 169.77500  8.895988 12.50 150 163.75 170.0 176.25  187 80
-## MASA      63.47625 11.377106 12.75  40  55.75  63.5  68.50   90 80</code></pre>
+<pre><code>##               mean        sd  IQR  0%    25% 50%    75% 100%  n
+## ESTATURA 170.53750  8.597827 12.5 150 164.75 171 177.25  187 80
+## MASA      64.80125 11.131657 12.5  45  57.75  64  70.25   90 80</code></pre>
 <p>Concluya bajo el contexto de la información.</p>
 <p>Para consultar la documentación de cualquier función, puede hacerlo cargando el paquete donde está alojada y luego debe invocarla escribiendo antes <code>?</code></p>
 <pre class="r"><code># Abrir la documentación de esta función
@@ -161,7 +163,7 @@ numSummary(datos[,c(&quot;ESTATURA&quot;, &quot;MASA&quot;), drop=FALSE], statis
 with(datos, hist(ESTATURA, main = &quot;&quot;))  # grafica el histograma
 with(datos, plot(density(ESTATURA), 
                  main = &quot;&quot;, xlab = &quot;ESTATURA&quot;))  # genera gráfico de densidad</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>¿Existe sesgo?¿Hacia qué dirección?</p>
 <hr style="color: #0056b2;" />
 <p><strong>EJERCICIO 1:</strong> Grafique en su consola de <code>R</code> las mismas figuras para la variable <strong>MASA</strong>.</p>
@@ -182,7 +184,7 @@ levels(datos$ESTRATO)</code></pre>
 xTabla_Estrato</code></pre>
 <pre><code>## ESTRATO
 ##  1  2  3  4  5  6 
-##  7 30 35  6  1  1</code></pre>
+##  8 35 28  5  1  3</code></pre>
 <pre class="r"><code>class(xTabla_Estrato)</code></pre>
 <pre><code>## [1] &quot;xtabs&quot; &quot;table&quot;</code></pre>
 <p>Observe que la tabla es un objeto de clase <em>xtabs</em> y <em>table</em>. Con la función <code>table</code> también puede construir la tabla de frecuencia absoluta:</p>
@@ -190,7 +192,7 @@ xTabla_Estrato</code></pre>
 Tabla_Estrato</code></pre>
 <pre><code>## 
 ##  1  2  3  4  5  6 
-##  7 30 35  6  1  1</code></pre>
+##  8 35 28  5  1  3</code></pre>
 <pre class="r"><code>class(Tabla_Estrato)</code></pre>
 <pre><code>## [1] &quot;table&quot;</code></pre>
 <p>La tabla es un objeto de clase <em>table</em>. Los objetos de clase <em>table</em> y <em>xtabs</em> tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto <code>xtable</code>:</p>
@@ -198,7 +200,7 @@ Tabla_Estrato</code></pre>
 <p>Con la tabla construida, es posible realizar el gráfico correspondiente:</p>
 <pre class="r"><code>barplot(Tabla_Porcentaje, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia Relativa (%)&quot;, col = &quot;pink&quot;,
         main = &quot;Distribución del Estrato entre los estudiantes&quot;)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <p>¿Por qué se realizó un gráfico de barras?</p>
 <hr style="color: #0056b2;" />
 <p><strong>EJERCICIO 2:</strong> Grafique un diagrama de barras para la variable <strong>GENERO</strong>.</p>
@@ -206,8 +208,9 @@ Tabla_Estrato</code></pre>
 <p>Alternativamente, puede utilizar la función del paquete <strong>Rcmdr</strong> para hacer un gráfico de barras:</p>
 <pre class="r"><code>with(datos, Barplot(ESTRATO, xlab = &quot;Estrato&quot;, ylab = &quot;Frecuencia&quot;, col = &quot;lightblue&quot;,
                     main = &quot;Distribución del Estrato entre los estudiantes&quot;))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
-<p><code>barplot</code> (de <strong>graphics</strong>) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como <em>factor</em> o como <em>character</em>. Por otro lado, <code>Barplot</code> (de <strong>Rcmdr</strong>) recibe como argumento de entrada un vector de clase <code>factor</code>. Recuerde, el resultado obtenido con <code>Barplot</code> se puede replicar también en la interfaz de RCommander.</p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><code>barplot</code> (de <strong>graphics</strong>) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como <em>factor</em> o como <em>character</em>. Por otro lado, <code>Barplot</code> (de <strong>Rcmdr</strong>) recibe como argumento de entrada un vector de clase <code>factor</code>.
+<!-- Recuerde, el resultado obtenido con `Barplot` se puede replicar también en la interfaz de RCommander. --></p>
 <hr style="color: #0056b2;" />
 <ol start="3" style="list-style-type: decimal">
 <li>Si se considera la variable <strong>ESTATURA</strong>, ¿Esta se comporta igual en los hombres y mujeres? Justifique su respuesta. Elabore los gráficos que considere pertinentes. Estos deben ser interpretados, en el contexto de la información analizada.</li>
@@ -215,7 +218,7 @@ Tabla_Estrato</code></pre>
 <p>El <em>boxplot</em> muestra el comportamiento de la distribución de datos, agrupada en las categorías que se especifiquen. Veamos:</p>
 <pre class="r"><code># Paquete graphics
 boxplot(ESTATURA ~ GENERO, data = datos)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
 <p>¿Cómo se puede describir la distribución de la <strong>ESTATURA</strong> en hombres respecto a mujeres?</p>
 <hr style="color: #0056b2;" />
 <p><strong>EJERCICIO 3:</strong> El gráfico anterior se generó con el paquete <strong>graphics</strong>, que está preinstalado en <code>R</code>. Grafique un boxplot en RCommander.</p>
@@ -229,7 +232,7 @@ datos$GENERO &lt;- as.factor(datos$GENERO)
 H &lt;- with(datos, Hist(ESTATURA, groups = GENERO, scale = &quot;frequency&quot;, 
                       breaks = &quot;Sturges&quot;, col = &quot;darkgray&quot;, xlab = &quot;Estatura&quot;, 
                       ylab = &quot;Frecuencia&quot;))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <p>Si observa detalladamente, los límites de los intervalos de clase se acomodan justo igual para ambas categorías. Vamos a imprimir sus valores calculados:</p>
 <pre class="r"><code># Límites del histograma de &#39;Rcmdr&#39;
 H$MUJER$breaks</code></pre>
@@ -237,28 +240,28 @@ H$MUJER$breaks</code></pre>
 <p>Repliquemos este mismo tipo de gráfica con el paquete <strong>ggplot2</strong> de <strong>tidyverse</strong>:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(binwidth = 0.7)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 <p>En <strong>ggplot2</strong>, cada función que se aplica tiene argumentos de entrada que modifican el gráfico:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = &quot;black&quot;, fill = &quot;pink&quot;, breaks = seq(150, 180, by = 5))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 <p>A su vez, cada función que adicione va modificando el gráfico. Por ejemplo, <code>facet_grid</code> es una función que genera dos gráficos según la variable categórica de agrupación que se especifique:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = &quot;black&quot;, fill = &quot;pink&quot;, breaks = seq(150, 180, by = 5)) + 
   facet_grid(. ~ GENERO)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
 <p><code>theme_bw</code> cambia el fondo del gráfico:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = &quot;black&quot;, fill = &quot;pink&quot;, breaks = seq(150, 180, by = 5)) + 
   facet_grid(. ~ GENERO) +  theme_bw() + ggtitle(&quot;Gráficas simultáneas&quot;) +
   theme(plot.title = element_text(hjust = 0.5))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-24-1.png" width="672" /></p>
 <p>De forma similar, se pueden graficar las densidades:</p>
 <pre class="r"><code>ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_density() + 
   theme_bw() + facet_grid(. ~ GENERO) + ggtitle(&quot;Gráficas simultáneas&quot;) + 
   theme(plot.title = element_text(hjust = 0.5))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
 </div>
 <div id="gráficas-separadas" class="section level2">
 <h2>Gráficas separadas</h2>
@@ -271,21 +274,21 @@ print(&quot;MUJERES&quot;)</code></pre>
 <pre><code>## [1] &quot;MUJERES&quot;</code></pre>
 <pre class="r"><code>numSummary(datosF[,c(&quot;ESTATURA&quot;), drop=FALSE], statistics=c(&quot;mean&quot;, 
                 &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;), quantiles=c(0,.25,.5,.75,1))</code></pre>
-<pre><code>##      mean       sd  IQR  0%    25%   50% 75% 100%  n
-##  161.1923 6.829461 7.75 150 156.25 160.5 164  177 26</code></pre>
+<pre><code>##    mean       sd IQR  0% 25% 50% 75% 100%  n
+##  162.56 7.594296  13 150 157 161 170  178 25</code></pre>
 <pre class="r"><code>print(&quot;HOMBRES&quot;)</code></pre>
 <pre><code>## [1] &quot;HOMBRES&quot;</code></pre>
 <pre class="r"><code>numSummary(datosM[,c(&quot;ESTATURA&quot;), drop=FALSE], statistics=c(&quot;mean&quot;, 
                   &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;), quantiles=c(0,.25,.5,.75,1))</code></pre>
-<pre><code>##      mean       sd  IQR  0%    25%   50%    75% 100%  n
-##  173.9074 6.513465 11.5 161 168.25 173.5 179.75  187 54</code></pre>
+<pre><code>##      mean       sd IQR  0%   25% 50%   75% 100%  n
+##  174.1636 6.297453  10 161 169.5 174 179.5  187 55</code></pre>
 <pre class="r"><code>par(mfrow = c(1,2), oma = c(0, 0, 2, 0))
 with(datosM, hist(ESTATURA, main = &quot;Distribución de hombres&quot;, 
                   ylab = &quot;Frecuencia&quot;))
 with(datosF, hist(ESTATURA, main = &quot;Distribución de mujeres&quot;, 
                   ylab = &quot;Frecuencia&quot;))
 mtext(&quot;Gráficas separadas&quot;, outer = TRUE, cex = 1.2)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-27-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-26-1.png" width="672" /></p>
 <p>Compare la distribución de los hombres de las gráficas simultáneas con la distribución de las gráficas separadas. ¿Son coherentes las gráficas independientes con las simultáneas?</p>
 <hr style="color: #0056b2;" />
 <p><strong>EJERCICIO 4:</strong> Repita la graficacación simultánea y separada con la variable <strong>MASA</strong>, y compare.</p>
@@ -296,19 +299,19 @@ mtext(&quot;Gráficas separadas&quot;, outer = TRUE, cex = 1.2)</code></pre>
 <p>Los estadísticos descriptivos son útiles para responder la primera pregunta:</p>
 <pre class="r"><code>numSummary(datos[,&quot;MASA&quot;, drop=FALSE], groups=datos$FUMA, 
            statistics=c(&quot;mean&quot;, &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;), quantiles=c(0,.25,.5,.75,1))</code></pre>
-<pre><code>##        mean       sd   IQR 0%   25% 50%   75% 100% MASA:n
-## NO 63.01486 11.20101 12.75 40 55.25  62 68.00   90     74
-## SI 69.16667 13.09071 11.75 50 64.50  67 76.25   88      6</code></pre>
+<pre><code>##        mean       sd  IQR 0%   25%  50%   75% 100% MASA:n
+## NO 64.60676 11.11032 13.5 45 57.25 63.5 70.75   90     74
+## SI 67.20000 12.17210  3.3 50 64.50 66.6 67.80   88      6</code></pre>
 <p>Además, se puede representar el promedio gráficamente:</p>
 <pre class="r"><code>datos$FUMA &lt;- as.factor(datos$FUMA)
 with(datos, plotMeans(MASA, FUMA, error.bars=&quot;se&quot;, xlab=&quot;Fuma&quot;, 
                       ylab=&quot;Masa promedio&quot;, main=&quot;&quot;, connect=TRUE))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
 <p>Recuerde, los datos atípicos se pueden detectar con un <em>boxplot</em></p>
 <pre class="r"><code># Boxplot de RCommander
 Boxplot(MASA~FUMA, data=datos, id=list(method=&quot;y&quot;))</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
-<pre><code>## [1] &quot;28&quot; &quot;44&quot; &quot;71&quot;</code></pre>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+<pre><code>## [1] &quot;79&quot; &quot;7&quot;</code></pre>
 <p>Concluya bajo el contexto de la información.</p>
 <hr style="color: #0056b2;" />
 <ol start="5" style="list-style-type: decimal">
@@ -319,34 +322,34 @@ Boxplot(MASA~FUMA, data=datos, id=list(method=&quot;y&quot;))</code></pre>
 Porcentajes &lt;- totPercents(Conteo, digits = 2)
 Porcentajes</code></pre>
 <pre><code>##       HOMBRE MUJER Total
-## NO      60.0  32.5  92.5
-## SI       7.5   0.0   7.5
-## Total   67.5  32.5 100.0</code></pre>
+## NO     61.25 31.25  92.5
+## SI      7.50  0.00   7.5
+## Total  68.75 31.25 100.0</code></pre>
 <p>¿Por qué razón se sabe claramente que esta pregunta se responde con este tipo de tabla?</p>
 <hr style="color: #0056b2;" />
 <p><strong>BONUS</strong> La tabla de contingencia también se puede representar graficamente:</p>
 <pre class="r"><code>barplot(t(Porcentajes[1:2,1:2]), beside = T, col = 3:4, xlab = &quot;Fuma&quot;, ylab = &quot;Frecuencia (%)&quot;)
 legend(&quot;topright&quot;, legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-31-1.png" width="672" /></p>
 <hr style="color: #0056b2;" />
 <ol start="6" style="list-style-type: decimal">
 <li>¿Qué cantidad de estudiantes tienen una estatura igual o menor a 170 cm? ¿Qué porcentaje representan?</li>
 </ol>
 <p>La pregunta pregunta por los datos <em>iguales o menores a…</em>. Esto es un indicativo de que se puede responder sobre la base de la frecuencia acumulada. Para ello, resulta útil la <em>ojiva</em>:</p>
 <pre class="r"><code>h &lt;- hist(datos$ESTATURA, col = &quot;Steelblue3&quot;)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-32-1.png" width="672" /></p>
 <pre class="r"><code>library(agricolae)</code></pre>
 <pre><code>## Warning: package &#39;agricolae&#39; was built under R version 3.6.1</code></pre>
 <pre class="r"><code>ogive.freq(h)</code></pre>
-<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-33-2.png" width="672" /></p>
+<p><img src="/post/2020-02-03-estadística-descriptiva-ejercicio_files/figure-html/unnamed-chunk-32-2.png" width="672" /></p>
 <pre><code>##      x    RCF
 ## 1  150 0.0000
-## 2  155 0.0625
-## 3  160 0.1625
-## 4  165 0.3250
-## 5  170 0.5375
-## 6  175 0.7250
-## 7  180 0.8750
+## 2  155 0.0500
+## 3  160 0.1500
+## 4  165 0.2750
+## 5  170 0.4875
+## 6  175 0.7000
+## 7  180 0.8625
 ## 8  185 0.9875
 ## 9  190 1.0000
 ## 10 195 1.0000</code></pre>

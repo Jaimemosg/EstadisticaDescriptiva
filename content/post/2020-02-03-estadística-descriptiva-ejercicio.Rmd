@@ -44,7 +44,7 @@ Para crear la muestra, ejecute las siguientes líneas:
 # Función para extraer la muestra
 muestra <- function(clave){
 set.seed(clave)
-data <- datos_full[sample(1:200,80),]
+data <- datos_full[sample(1:202,80),]
 return(data)
 }
 
@@ -68,11 +68,11 @@ library(RcmdrMisc)
 library(tidyverse)
 ```
 
-Los paquetes anteriores son útiles para trabajar con líneas de código dentro de un script. Si desea apoyarse con la incerfaz de RCommander (recomendable), cargue el paquete que abre dicha interfaz:
+<!-- Los paquetes anteriores son útiles para trabajar con líneas de código dentro de un script. Si desea apoyarse con la incerfaz de RCommander (recomendable), cargue el paquete que abre dicha interfaz: -->
 
-```{r, eval=FALSE}
-library(Rcmdr)
-```
+<!-- ```{r, eval=FALSE} -->
+<!-- library(Rcmdr) -->
+<!-- ``` -->
 
 # Preguntas
 
@@ -89,7 +89,7 @@ Dentro del paquete **base**, `R` posee una función que calcula algunos estadís
 summary(datos)
 ```
 
-Por otro lado, **RCommander** tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:
+Por otro lado, **RcmdrMisc** (RCommander) tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:
 
 ```{r}
 # Resumen numérico con RCommander
@@ -182,7 +182,8 @@ with(datos, Barplot(ESTRATO, xlab = "Estrato", ylab = "Frecuencia", col = "light
                     main = "Distribución del Estrato entre los estudiantes"))
 ```
 
-`barplot` (de **graphics**) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como _factor_ o como _character_. Por otro lado, `Barplot` (de **Rcmdr**) recibe como argumento de entrada un vector de clase `factor`. Recuerde, el resultado obtenido con `Barplot` se puede replicar también en la interfaz de RCommander.
+`barplot` (de **graphics**) tiene como argumento de entrada una tabla, la cual se puede construir con las variables cualitativas definidas como _factor_ o como _character_. Por otro lado, `Barplot` (de **Rcmdr**) recibe como argumento de entrada un vector de clase `factor`. 
+<!-- Recuerde, el resultado obtenido con `Barplot` se puede replicar también en la interfaz de RCommander. -->
 
 <hr style="color: #0056b2;" />
 
