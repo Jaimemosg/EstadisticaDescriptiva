@@ -5,6 +5,11 @@ date: '2020-10-08'
 slug: clase-viii-algunas-gráficas-descriptivas
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
 # Paquetes necesarios
 
 ```{r, message=FALSE, warning=FALSE}
@@ -27,8 +32,8 @@ Los siguientes son datos correspondientes al número de bicicletas prestadas dur
 <!-- \begin{center} -->
 <!-- 	\includegraphics[width=0.6\textwidth]{bicis.png} -->
 <!-- \end{center} -->
-```{r, echo=FALSE, out.width='50%', fig.align='center'}
-knitr::include_graphics(rep('bicis.png'))
+```{r bicis, echo=FALSE, out.width='50%'}
+knitr::include_graphics('bicis.png')
 ```
 
 Vamos a tener en cuenta este ejemplo para los gráficos que vamos a aprender en esta sección.
@@ -50,7 +55,7 @@ Vamos a tener en cuenta este ejemplo para los gráficos que vamos a aprender en 
 Tenga en cuenta que $Me = \tilde{X}$.
 
 ```{r, echo=FALSE, out.width='50%', fig.align='center'}
-knitr::include_graphics(rep('Esquema.png'))
+knitr::include_graphics('Esquema.png')
 ```
 
 Hagamos un Boxplot sin variable de agrupación:
@@ -267,7 +272,7 @@ pareto.chart(data1, ylab='# de Préstamos')
 La base de datos `iris`, disponible en R provee las medidas en centímetros de la longitud y ancho de los sépalos y de los pétalos de tres especies de flores. 
 
 ```{r, echo=FALSE, out.width='70%', fig.align='center'}
-knitr::include_graphics(rep('1024px-Mature_flower_diagram.svg.png'))
+knitr::include_graphics('1024px-Mature_flower_diagram.svg.png')
 ```
 \centering
 Extraido de [Wikipedia](https://en.wikipedia.org/wiki/Sepal)\  
