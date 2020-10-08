@@ -1,0 +1,388 @@
+---
+title: 'Clase VIII: Algunas gráficas descriptivas'
+author: Jaime Mosquera
+date: '2020-10-08'
+slug: clase-viii-algunas-gráficas-descriptivas
+---
+
+# Paquetes necesarios
+
+```{r, message=FALSE, warning=FALSE}
+library(ggplot2)
+library(car)
+library(RcmdrMisc)
+library(lubridate)
+library(scales)
+library(qcc)
+library(agricolae)
+```
+
+
+# Ejemplo 1
+
+## Préstamo de bicicletas
+
+Los siguientes son datos correspondientes al número de bicicletas prestadas durante varias semanas por una estación del sistema de bicicletas públicas. En las filas se presentan las semanas de observación (no especificada):
+
+<!-- \begin{center} -->
+<!-- 	\includegraphics[width=0.6\textwidth]{bicis.png} -->
+<!-- \end{center} -->
+```{r, echo=FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics(rep('bicis.png'))
+```
+
+Vamos a tener en cuenta este ejemplo para los gráficos que vamos a aprender en esta sección.
+
+## Boxplot
+
+\begin{itemize}
+\item Ilustra los cuartiles. \hfill \break
+\item Permite comparar una variable cuantitativa agrupada en un cualitativa. \hfill \break
+\item Eje $x$: Variable categórica (caso de 2 variables). \hfill \break
+\item Eje $y$: Variable numérica (variable de respuesta). \hfill \break
+\item Los ejes son intercambiables.
+\end{itemize}
+
+\begin{center}
+	\includegraphics[width=0.6\textwidth]{Esquema.png}
+\end{center}
+
+Tenga en cuenta que $Me = \tilde{X}$.
+
+```{r, echo=FALSE, out.width='50%', fig.align='center'}
+knitr::include_graphics(rep('Esquema.png'))
+```
+
+Hagamos un Boxplot sin variable de agrupación:
+
+\centering
+```{r, echo=FALSE}
+x <- c(68,63,42,27,30,36,28,32,12,
+       65,43,25,74,51,36,42,28,38,47,
+       12,32,49,38,42,27,31,50,21,23,
+       22,43,27,49,29,23,19,46,16,49,
+       79,27,22,23,24,25,44,39,24,
+       31,28,25,45,12,57,51,43,69)
+boxplot(x, ylab = "# de biciletas prestadas")
+```
+
+## Boxplot con variable de agrupación
+
+\centering
+```{r, out.height='90%'}
+data <- data.frame(Prestamos = x,
+                   Dia = c(rep("Lun", 9), 
+                           rep(c("Mar","Mie","Jue"), each = 10),
+                           rep("Vie", 9), rep("Sáb", 9))
+                   )
+boxplot(Prestamos ~ Dia, data = data, ylab = "Préstamos")
+```
+
+## Gráfico de Medias
+
+\begin{itemize}
+\item Ilustra el promedio y la desviación estándar o el error estándar:
+$$S.E = \frac{S}{\sqrt{n}} \quad \quad \text{(Error Estándar)}$$
+\item Permite comparar una variable cuantitativa agrupada en un cualitativa. \hfill \break
+\item Eje $x$: Variable categórica (caso de 2 variables). \hfill \break
+\item Eje $y$: Variable numérica (variable de respuesta).
+\end{itemize}
+
+
+\# de Bicicletas promedio prestadas por día:
+
+\centering
+```{r, warning=FALSE, message=FALSE}
+library(RcmdrMisc)
+par(cex.lab = 1.3, cex.axis = 1.3)
+with(data, plotMeans(Prestamos, Dia, error.bars="se", main="", 
+  connect=TRUE, ylab = "# promedio de biciletas prestadas"))
+```
+
+Recuerde, el promedio señalado por el punto negro, y el error estándar señalado por las barras de error (las líneas punteadas) se calculan con los datos correspondientes a cada día. Por ejemplo, para el día _viernes_.
+
+```{r, echo=FALSE, out.width='80%', out.height='90%', fig.align='center'}
+knitr::include_graphics(rep('demedias.png'))
+```
+
+## Gráfico de Barras
+
+- Permite graficar una variable numérica con **una** categórica.\  
+
+- Permite representar graficamente tablas de frecuencia de variable categórica.\  
+
+- Eje x: Variable categórica.
+- Eje y: Variable numérica (o Frecuencia).
+
+
+\centering
+```{r, warning=FALSE, message=FALSE}
+resumen <- read.csv("frec_dia_hora.csv", header = T, row.names = "Dia")
+data1 <- resumen[,-5]
+data1 <- rowSums(data1)
+barplot(t(data1), beside = TRUE, xlab = "Día", ylab = "# préstamos")
+```
+
+**Nota:** quitamos la columna 5 de manera arbitraria, para hacer una demostración de como eliminar columnas. Cuando hay este tipo de situaciones con valores `NA`, puede tener más relevancia quitar filas (recuerde el uso de `na.omit`).
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(data = data, aes(x=Dia, y=Prestamos)) + geom_bar(stat="sum") + 
+  theme(legend.position = "none") 
+```
+
+## Gráfico circular
+
+- Permite representar graficamente tablas de frecuencia de variable categórica.\  
+
+- Color: variable categórica
+- Tamaño de la tajada: frecuencia.
+
+```{r}
+lbls <- names(data1)
+pie(data1, labels = lbls, main="Gráfico Circular")
+```
+
+## Gráfico de Barras comparativo (2 variables)
+
+\begin{itemize}
+\item Permite graficar una variable numérica con dos categóricas. \hfill \break
+\item Alternativamente, permite graficar tablas de contingencia de dos variables. \hfill \break
+\item Eje $x$: Variable categórica. \hfill \break
+\item Eje $y$: Variable numérica (o Freciencia).
+\item Colores: otra variable categórica.
+\end{itemize}
+
+
+\# de Bicicletas prestadas por día:
+
+```{r, results = "asis", echo = FALSE, message = FALSE}
+library(knitr)
+
+tex2markdown <- function(texstring) {
+  writeLines(text = texstring,
+             con = myfile <- tempfile(fileext = ".tex"))
+  texfile <- pandoc(input = myfile, format = "html")
+  cat(readLines(texfile), sep = "\n")
+  unlink(c(myfile, texfile))
+}
+
+textable <- "
+\\begin{table}[]
+\\centering
+\\begin{tabular}{rrrrrrrrrrr}
+  \\hline
+ & Sem.1 & Sem.2 & Sem.3 & Sem.4 & Sem.5 & Sem.6 & Sem.7 & Sem.8 & Sem.9 & Sem.10 \\\\
+  \\hline
+Lun &  68 &  63 &  42 &  27 &  &  30 &  36 &  28 &  32 &  12 \\\\
+  Mar &  65 &  43 &  25 &  74 &  38 &  51 &  36 &  42 &  28 &  47 \\\\
+  Mie &  12 &  32 &  49 &  38 &  21 &  42 &  27 &  31 &  50 &  23 \\\\
+  Jue &  22 &  43 &  27 &  49 &  16 &  28 &  23 &  19 &  46 &  49 \\\\
+  Vie &  79 &  27 &  22 &  23 &  &  24 &  25 &  44 &  30 &  24 \\\\
+  Sab &  31 &  28 &  25 &  45 &  &  12 &  57 &  51 &  43 &  69 \\\\
+   \\hline
+\\end{tabular}
+\\end{table}
+
+"
+
+tex2markdown(textable)
+```
+
+<!-- \\begin{table}[] -->
+<!-- \\centering -->
+<!-- \\begin{tabular}{rrrrrrrrrrr} -->
+<!--   \\hline -->
+<!--  & Sem.1 & Sem.2 & Sem.3 & Sem.4 & Sem.5 & Sem.6 & Sem.7 & Sem.8 & Sem.9 & Sem.10 \\\\ -->
+<!--   \\hline -->
+<!-- Lun &  68 &  63 &  42 &  27 &  &  30 &  36 &  28 &  32 &  12 \\\\ -->
+<!--   Mar &  65 &  43 &  25 &  74 &  38 &  51 &  36 &  42 &  28 &  47 \\\\ -->
+<!--   Mie &  12 &  32 &  49 &  38 &  21 &  42 &  27 &  31 &  50 &  23 \\\\ -->
+<!--   Jue &  22 &  43 &  27 &  49 &  16 &  28 &  23 &  19 &  46 &  49 \\\\ -->
+<!--   Vie &  79 &  27 &  22 &  23 &  &  24 &  25 &  44 &  30 &  24 \\\\ -->
+<!--   Sáb &  31 &  28 &  25 &  45 &  &  12 &  57 &  51 &  43 &  69 \\\\ -->
+<!--    \\hline -->
+<!-- \\end{tabular} -->
+<!-- \\end{table}} -->
+
+\centering
+```{r, warning=FALSE, message=FALSE}
+data2 <- resumen[,c("Sem.1","Sem.4","Sem.8")]
+barplot(t(data2), beside = T, col = 3:5, xlab = "Día", ylab = "# préstamos")
+legend("topright", legend = colnames(data2), fil = 3:5)
+```
+
+## Histograma
+
+- Permite representar graficamente tablas de frecuencia de variable numérica.\  
+
+- Eje x: Variable numérica
+- Eje y: Frecuencia.
+
+\centering
+```{r, warning=FALSE, message=FALSE}
+h <- hist(x, main='')
+```
+ 
+Observe la siguiente tabla de frecuencias. ¿Qeé relación tiene con el histograma?
+
+```{r, warning=FALSE, message=FALSE}
+library(fdth)
+mi_tabla <- fdt(x = x, start = 10, end = 80, right = TRUE,
+                h = 10)
+summary(mi_tabla)
+```
+
+## Polígono de Frecuencias (Ojiva)
+
+- El gráfico es una serie de parejas ordendas unidas por rectas.
+
+- Eje x: Variable aleatoria.
+- Eje y: Frecuencia acumulada.
+
+```{r}
+# library(agricolae)
+ogive.freq(h, xlab='Número de préstamos', ylab='Relative frequency')
+```
+
+## Diagrama de Pareto
+
+- Se compone de un diagrama de barras, al cual se le superpone un gráfico de línea (polígono de frecuencia acumulada).
+
+- Eje x: Variable categórica
+- Eje y izquierdo: Frecuencia absoluta acumulada.
+- Eje y derecho: Frecuencia relativa acumulada.
+
+Grafiquemos uno de estos para las bicicletas
+
+```{r}
+# library(qcc)
+pareto.chart(data1, ylab='# de Préstamos')
+```
+
+
+# Ejemplo 2
+
+## Ejemplo 2: datos _Iris_, de Edgar Anderson
+
+La base de datos `iris`, disponible en R provee las medidas en centímetros de la longitud y ancho de los sépalos y de los pétalos de tres especies de flores. 
+
+```{r, echo=FALSE, out.width='70%', fig.align='center'}
+knitr::include_graphics(rep('1024px-Mature_flower_diagram.svg.png'))
+```
+\centering
+Extraido de [Wikipedia](https://en.wikipedia.org/wiki/Sepal)\  
+
+Exploremos este conjunto de datos.
+
+## Ejemplo 2: datos _Iris_
+
+```{r, echo=TRUE}
+# 'iris' está cargado en R por defecto
+head(iris)
+```
+
+## Diagrama de dispersión
+
+- Para observar el comportamiento de dos variables Cuantitativas.\  
+- Puntos en plano coordenado. \  
+
+- Eje x: Variable independiente
+- Eje y: Variable de respuesta
+
+
+```{r}
+plot(iris$Sepal.Length, iris$Petal.Length)
+```
+
+Usemos ahora el paquete `ggplot2`
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(iris) +
+  aes(x = Sepal.Length, y = Petal.Length) +
+  geom_point()
+```
+
+## Matriz de diagramas de dispersión
+
+En este gráficos se grafican las parejas variables posibles en diagramas de dispersión.
+
+```{r}
+plot(iris[,1:4])
+```
+
+En `RcmdrMisc` hay otro buen gráfico.
+
+```{r}
+scatterplotMatrix(~Petal.Length+Petal.Width+Sepal.Length+Sepal.Width | Species, 
+                  regLine=FALSE, smooth=FALSE, diagonal=list(method="density"), 
+                  by.groups=TRUE, data=iris)
+```
+
+
+## Diagrama de dispersión discriminado
+
+- Para observar el comportamiento de dos variables Cuantitativas y una categórica.\  
+- Puntos en plano coordenado. \  
+
+- Eje x: Variable independiente
+- Eje y: Variable de respuesta
+- Colores: variable categórica.
+
+
+```{r, warning=FALSE, message=FALSE}
+ggplot(iris) +
+  aes(x = Sepal.Length, y = Petal.Length, colour = Species) +
+  geom_point() +
+  scale_color_hue()
+```
+
+# Ejemplo 3
+
+## Edad de muerte de los reyes
+
+Examinemos una base de datos curiosa. Ésta contiene la edad que tenían varios reyes de Inglaterra en el momento de su fallecimiento.
+
+
+```{r}
+kings <- scan("http://robjhyndman.com/tsdldata/misc/kings.dat",skip=3)
+kings
+```
+
+## Gráfico de línea
+
+Una manera de visualizar esta información es con los **gráficos de línea de tiempo**, también llamados **gráficos de series de tiempo**. Una forma sencilla de hacerlos es graficando una línea:
+
+```{r}
+plot(kings, type = 'l')
+```
+
+# Ejemplo 3:  Lidiando con fechas
+
+Tenemos un connunto de datos con las mediciones meteorológicas diarias de 2009 a 2011 de _NEON Harvard Forest field_. Examinemos como varía la temperatura del aire a través del tiempo. La variable de interés se llama `airt`.
+
+Primero, importemos los datos.
+
+```{r}
+MetDiario.09.11 <- read.csv("Met_HARV_Daily_2009_2011.csv")
+```
+
+Ahora vamos a asegurarnos de que la columna que tiene la fecha sea interpretada por `R` como una fecha:
+
+```{r}
+MetDiario.09.11$date <- as.Date(MetDiario.09.11$date)
+```
+
+La librería **ggplot2** permite hacer gráficos de series de tiempo de forma muy flexible.
+
+```{r}
+ggplot(MetDiario.09.11, aes(date, airt)) + geom_line(na.rm=TRUE)
+```
+
+Si queremos tener en cuenta el detalle de los meses, debemos cambiar la escala del eje x.
+
+```{r}
+# library(lubridate)
+# library(scales)
+ggplot(MetDiario.09.11, aes(date, airt)) + geom_line(na.rm=TRUE) +
+  scale_x_date(labels=date_format("%b %y"))
+```

@@ -17,7 +17,7 @@ En este ejercicio vamos a trabajar con una muestra aleatoria de una _gran_ base 
 
 Vamos a extraer una muestra de tamaño 80 de la base de datos original. Los datos originales están en el archivo `datos_taller.txt`. el cual puede descargarlos directamente desde un repositorio de Git Hub:
 
-```{r, eval=FALSE}
+```{r importURL, eval=FALSE}
 # Importar desde Git Hub
 myURL <- 
   "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
@@ -27,12 +27,12 @@ datos_full <- read_table2(myURL)
 
 También está disponible en [Google Drive](https://drive.google.com/file/d/1LblKMIJ5FB-YUS5L7S6blKgnKRB33XpV/view?usp=sharing), si desea descargarlo para importarlo localmente:
 
-```{r, eval=FALSE}
+```{r importLocal, eval=FALSE}
 # Importar datos localmente
 datos_full <- read.table(file.choose(), header = T)
 ```
 
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+```{r imported, echo=FALSE, message=FALSE, warning=FALSE}
 myURL <- "https://raw.github.com/Jaimemosg/EstadisticaDescriptiva/master/datos_taller.txt"
 library(readr)
 datos_full <- read_table2(myURL)
@@ -40,7 +40,7 @@ datos_full <- read_table2(myURL)
 
 Para crear la muestra, ejecute las siguientes líneas:
 
-```{r}
+```{r muestra}
 # Función para extraer la muestra
 muestra <- function(clave){
 set.seed(clave)
@@ -57,13 +57,13 @@ datos <- muestra(clave)
 
 En este ejercicio, vamos a trabajar con varios paquetes. Copie y pegue en su consola de `R` la siguiente líneas para instalarlos:
 
-```{r, eval=FALSE}
+```{r install, eval=FALSE}
 install.packages(c("Rcmdr", "RcmdrMisc", "tidyverse", "agricolae"))
 ```
 
 Ahora, puede cargar los paquetes. Ignore los _warnings_ que le aparezcan.
 
-```{r, warning=FALSE}
+```{r load, warning=FALSE}
 library(RcmdrMisc)
 library(tidyverse)
 ```
@@ -84,14 +84,14 @@ Usando la base de datos generada a partir de la muestra, responda a las siguient
 
 Dentro del paquete **base**, `R` posee una función que calcula algunos estadísticos descriptivos:
 
-```{r}
+```{r summary}
 # Resumen numérico del paquete Base
 summary(datos)
 ```
 
 Por otro lado, **RcmdrMisc** (RCommander) tiene una función que calcula incluso más medidas descriptivas. Esta función se ajusta perfectamente a los requerimientos de la pregunta:
 
-```{r}
+```{r numSummary}
 # Resumen numérico con RCommander
 numSummary(datos[,c("ESTATURA", "MASA"), drop=FALSE], statistics=c("mean", 
            "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
@@ -101,14 +101,14 @@ Concluya bajo el contexto de la información.
 
 Para consultar la documentación de cualquier función, puede hacerlo cargando el paquete donde está alojada y luego debe invocarla escribiendo antes `?`
 
-```{r, eval=FALSE}
+```{r docu, eval=FALSE}
 # Abrir la documentación de esta función
 ?numSummary
 ```
 
 A continuación, vamos a graficar la distribución de los datos de la **ESTATURA** mediante un histograma (izquierda) y un gráfico de densidad (derecha):
 
-```{r}
+```{r distplot}
 par(mfrow=c(1,2))                       # genera dos espacios dentro de una ventana
 with(datos, hist(ESTATURA, main = ""))  # grafica el histograma
 with(datos, plot(density(ESTATURA), 
@@ -127,20 +127,20 @@ with(datos, plot(density(ESTATURA),
 
 Observemos el tipo de variables que hay en el marco de datos (_data frame_):
 
-```{r}
+```{r mysapply}
 sapply(datos, FUN = class)
 ```
 
 Como podemos observar, la variable **ESTRATO** fue detectada como numérica, pero sabemos que en la práctica el concepto que representa se relaciona con las variables categóricas. Para solucionar este problema, vamos a _coercionar_ la variable, para que sea de tipo _factor_. Esta es una estructura de datos que refleja el comportamiento de una variable categórica:
 
-```{r}
+```{r fac}
 datos$ESTRATO <- as.factor(datos$ESTRATO)
 levels(datos$ESTRATO)
 ```
 
 con la función `levels` usted podrá ver las categorías que pertenecen a las variables de tipo _factor_. Con la variable como factor, puede construir la tabla de frecuencia absoluta con `xtabs`:
   
-```{r}
+```{r xtabs}
 xTabla_Estrato <- xtabs(~ESTRATO, data = datos)
 xTabla_Estrato
 class(xTabla_Estrato)
@@ -148,7 +148,7 @@ class(xTabla_Estrato)
 
 Observe que la tabla es un objeto de clase _xtabs_ y _table_. Con la función `table` también puede construir la tabla de frecuencia absoluta:
 
-```{r}
+```{r myrtable}
 Tabla_Estrato <- table(datos$ESTRATO)
 Tabla_Estrato
 class(Tabla_Estrato)
@@ -156,13 +156,13 @@ class(Tabla_Estrato)
 
 La tabla es un objeto de clase _table_. Los objetos de clase _table_ y _xtabs_ tiene como métodos algunas operaciones matriciales. Por ello, es sencillo construir la tabla de frecuencias relativas (en porcentaje). Por ejemplo, con el objeto `xtable`:
 
-```{r}
+```{r perc}
 Tabla_Porcentaje <- xTabla_Estrato*100/nrow(datos)
 ```
 
 Con la tabla construida, es posible realizar el gráfico correspondiente:
 
-```{r}
+```{r bar1}
 barplot(Tabla_Porcentaje, xlab = "Estrato", ylab = "Frecuencia Relativa (%)", col = "pink",
         main = "Distribución del Estrato entre los estudiantes")
 ```
@@ -177,7 +177,7 @@ barplot(Tabla_Porcentaje, xlab = "Estrato", ylab = "Frecuencia Relativa (%)", co
 
 Alternativamente, puede utilizar la función del paquete **Rcmdr** para hacer un gráfico de barras:
 
-```{r}
+```{r bar2}
 with(datos, Barplot(ESTRATO, xlab = "Estrato", ylab = "Frecuencia", col = "lightblue",
                     main = "Distribución del Estrato entre los estudiantes"))
 ```
@@ -191,7 +191,7 @@ with(datos, Barplot(ESTRATO, xlab = "Estrato", ylab = "Frecuencia", col = "light
 
 El _boxplot_ muestra el comportamiento de la distribución de datos, agrupada en las categorías que se especifiquen. Veamos:
 
-```{r}
+```{r bar3}
 # Paquete graphics
 boxplot(ESTATURA ~ GENERO, data = datos)
 ```
@@ -200,7 +200,7 @@ boxplot(ESTATURA ~ GENERO, data = datos)
 
 <hr style="color: #0056b2;" />
 
-**EJERCICIO 3:** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`. Grafique un boxplot en RCommander.
+**EJERCICIO 3:** El gráfico anterior se generó con el paquete **graphics**, que está preinstalado en `R`.
 
 <hr style="color: #0056b2;" />
 
@@ -210,7 +210,7 @@ La respuesta puede complementarse con otros gráficos descriptivos, pero se debe
 
 **Rcmdr** permite graficar histogramas de forma simultánea, de acuerdo con las categorías de una variable cualitativa:
 
-```{r}
+```{r hist1}
 # Con RCommander
 datos$GENERO <- as.factor(datos$GENERO)
 H <- with(datos, Hist(ESTATURA, groups = GENERO, scale = "frequency", 
@@ -220,28 +220,28 @@ H <- with(datos, Hist(ESTATURA, groups = GENERO, scale = "frequency",
 
 Si observa detalladamente, los límites de los intervalos de clase se acomodan justo igual para ambas categorías. Vamos a imprimir sus valores calculados:
 
-```{r}
+```{r breaks}
 # Límites del histograma de 'Rcmdr'
 H$MUJER$breaks
 ```
 
 Repliquemos este mismo tipo de gráfica con el paquete **ggplot2** de **tidyverse**:
 
-```{r}
+```{r histgg}
 ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(binwidth = 0.7)
 ```
 
 En **ggplot2**, cada función que se aplica tiene argumentos de entrada que modifican el gráfico:
 
-```{r}
+```{r histgg2}
 ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = "black", fill = "pink", breaks = seq(150, 180, by = 5))
 ```
 
 A su vez, cada función que adicione va modificando el gráfico. Por ejemplo, `facet_grid` es una función que genera dos gráficos según la variable categórica de agrupación que se especifique:
 
-```{r}
+```{r histgg3}
 ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = "black", fill = "pink", breaks = seq(150, 180, by = 5)) + 
   facet_grid(. ~ GENERO)
@@ -249,7 +249,7 @@ ggplot(data = datos, mapping = aes(x = ESTATURA)) +
 
 `theme_bw` cambia el fondo del gráfico:
 
-```{r}
+```{r histgg4}
 ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_histogram(color = "black", fill = "pink", breaks = seq(150, 180, by = 5)) + 
   facet_grid(. ~ GENERO) +  theme_bw() + ggtitle("Gráficas simultáneas") +
@@ -258,7 +258,7 @@ ggplot(data = datos, mapping = aes(x = ESTATURA)) +
 
 De forma similar, se pueden graficar las densidades:
 
-```{r}
+```{r histgg5}
 ggplot(data = datos, mapping = aes(x = ESTATURA)) + 
   geom_density() + 
   theme_bw() + facet_grid(. ~ GENERO) + ggtitle("Gráficas simultáneas") + 
@@ -269,7 +269,7 @@ ggplot(data = datos, mapping = aes(x = ESTATURA)) +
 
 Sea con **Rcmdr** o con **ggplot2**, se forzó a que ambas categorías de **GENERO** tuvieran los mismos intervalos de clase. Ahora, grafiquemos de manera independiente:
 
-```{r}
+```{r sep1}
 datosF <- datos %>% filter(GENERO == "MUJER")  # Filtramos la distribución de mujeres
 datosM <- datos %>% filter(GENERO == "HOMBRE") # Filtramos la distribución de hombres
 
@@ -301,14 +301,14 @@ Compare la distribución de los hombres de las gráficas simultáneas con la dis
 
 Los estadísticos descriptivos son útiles para responder la primera pregunta:
 
-```{r}
+```{r sep2}
 numSummary(datos[,"MASA", drop=FALSE], groups=datos$FUMA, 
            statistics=c("mean", "sd", "IQR", "quantiles"), quantiles=c(0,.25,.5,.75,1))
 ```
 
 Además, se puede representar el promedio gráficamente:
 
-```{r}
+```{r fumar}
 datos$FUMA <- as.factor(datos$FUMA)
 with(datos, plotMeans(MASA, FUMA, error.bars="se", xlab="Fuma", 
                       ylab="Masa promedio", main="", connect=TRUE))
@@ -316,7 +316,7 @@ with(datos, plotMeans(MASA, FUMA, error.bars="se", xlab="Fuma",
 
 Recuerde, los datos atípicos se pueden detectar con un _boxplot_
 
-```{r}
+```{r fumar2}
 # Boxplot de RCommander
 Boxplot(MASA~FUMA, data=datos, id=list(method="y"))
 ```
@@ -329,7 +329,7 @@ Concluya bajo el contexto de la información.
 
 Basta con realizar una tabla de contingencia para responder esta pregunta:
 
-```{r}
+```{r xtabs2}
 Conteo <- xtabs(~FUMA+GENERO, data=datos)
 Porcentajes <- totPercents(Conteo, digits = 2)
 Porcentajes
@@ -341,7 +341,7 @@ Porcentajes
 
 **BONUS** La tabla de contingencia también se puede representar graficamente:
 
-```{r}
+```{r barfumar}
 barplot(t(Porcentajes[1:2,1:2]), beside = T, col = 3:4, xlab = "Fuma", ylab = "Frecuencia (%)")
 legend("topright", legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4)
 ```
@@ -352,7 +352,7 @@ legend("topright", legend = colnames(Porcentajes[1:2,1:2]), fill = 3:4)
 
 La pregunta pregunta por los datos _iguales o menores a..._. Esto es un indicativo de que se puede responder sobre la base de la frecuencia acumulada. Para ello, resulta útil la _ojiva_:
 
-```{r}
+```{r last}
 h <- hist(datos$ESTATURA, col = "Steelblue3")
 
 library(agricolae)

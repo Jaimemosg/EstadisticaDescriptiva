@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.76.0" />
+
+
+<title>Clase VIII: Algunas gráficas descriptivas - Blog de Jaime</title>
+<meta property="og:title" content="Clase VIII: Algunas gráficas descriptivas - Blog de Jaime">
+
+
+  <link href='/Jlogo.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/Jlogo.png"
+         width="50"
+         height="50"
+         alt="Jlogo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="https://github.com/Jaimemosg/EstadisticaDescriptiva">GitHub</a></li>
+    
+    <li><a href="/about/">Información</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">6 min read</span>
+    
+
+    <h1 class="article-title">Clase VIII: Algunas gráficas descriptivas</h1>
+
+    
+    <span class="article-date">2020-10-08</span>
+    
+
+    <div class="article-content">
+      
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<div id="paquetes-necesarios" class="section level1">
+<h1>Paquetes necesarios</h1>
+<pre class="r"><code>library(ggplot2)
+library(car)
+library(RcmdrMisc)
+library(lubridate)
+library(scales)
+library(qcc)
+library(agricolae)</code></pre>
+</div>
+<div id="ejemplo-1" class="section level1">
+<h1>Ejemplo 1</h1>
+<div id="préstamo-de-bicicletas" class="section level2">
+<h2>Préstamo de bicicletas</h2>
+<p>Los siguientes son datos correspondientes al número de bicicletas prestadas durante varias semanas por una estación del sistema de bicicletas públicas. En las filas se presentan las semanas de observación (no especificada):</p>
+<!-- \begin{center} -->
+<!--    \includegraphics[width=0.6\textwidth]{bicis.png} -->
+<!-- \end{center} -->
+<p><img src="bicis.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>Vamos a tener en cuenta este ejemplo para los gráficos que vamos a aprender en esta sección.</p>
+</div>
+<div id="boxplot" class="section level2">
+<h2>Boxplot</h2>
+<p>Tenga en cuenta que <span class="math inline">\(Me = \tilde{X}\)</span>.</p>
+<p><img src="Esquema.png" width="50%" style="display: block; margin: auto;" /></p>
+<p>Hagamos un Boxplot sin variable de agrupación:</p>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="boxplot-con-variable-de-agrupación" class="section level2">
+<h2>Boxplot con variable de agrupación</h2>
+<pre class="r"><code>data &lt;- data.frame(Prestamos = x,
+                   Dia = c(rep(&quot;Lun&quot;, 9), 
+                           rep(c(&quot;Mar&quot;,&quot;Mie&quot;,&quot;Jue&quot;), each = 10),
+                           rep(&quot;Vie&quot;, 9), rep(&quot;Sáb&quot;, 9))
+                   )
+boxplot(Prestamos ~ Dia, data = data, ylab = &quot;Préstamos&quot;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-5-1.png" width="672" height="90%" /></p>
+</div>
+<div id="gráfico-de-medias" class="section level2">
+<h2>Gráfico de Medias</h2>
+<p># de Bicicletas promedio prestadas por día:</p>
+<pre class="r"><code>library(RcmdrMisc)
+par(cex.lab = 1.3, cex.axis = 1.3)
+with(data, plotMeans(Prestamos, Dia, error.bars=&quot;se&quot;, main=&quot;&quot;, 
+  connect=TRUE, ylab = &quot;# promedio de biciletas prestadas&quot;))</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Recuerde, el promedio señalado por el punto negro, y el error estándar señalado por las barras de error (las líneas punteadas) se calculan con los datos correspondientes a cada día. Por ejemplo, para el día <em>viernes</em>.</p>
+<p><img src="demedias.png" width="80%" height="90%" style="display: block; margin: auto;" /></p>
+</div>
+<div id="gráfico-de-barras" class="section level2">
+<h2>Gráfico de Barras</h2>
+<ul>
+<li><p>Permite graficar una variable numérica con <strong>una</strong> categórica. </p></li>
+<li><p>Permite representar graficamente tablas de frecuencia de variable categórica. </p></li>
+<li><p>Eje x: Variable categórica.</p></li>
+<li><p>Eje y: Variable numérica (o Frecuencia).</p></li>
+</ul>
+<pre class="r"><code>resumen &lt;- read.csv(&quot;frec_dia_hora.csv&quot;, header = T, row.names = &quot;Dia&quot;)
+data1 &lt;- resumen[,-5]
+data1 &lt;- rowSums(data1)
+barplot(t(data1), beside = TRUE, xlab = &quot;Día&quot;, ylab = &quot;# préstamos&quot;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><strong>Nota:</strong> quitamos la columna 5 de manera arbitraria, para hacer una demostración de como eliminar columnas. Cuando hay este tipo de situaciones con valores <code>NA</code>, puede tener más relevancia quitar filas (recuerde el uso de <code>na.omit</code>).</p>
+<pre class="r"><code>ggplot(data = data, aes(x=Dia, y=Prestamos)) + geom_bar(stat=&quot;sum&quot;) + 
+  theme(legend.position = &quot;none&quot;) </code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="gráfico-circular" class="section level2">
+<h2>Gráfico circular</h2>
+<ul>
+<li><p>Permite representar graficamente tablas de frecuencia de variable categórica. </p></li>
+<li><p>Color: variable categórica</p></li>
+<li><p>Tamaño de la tajada: frecuencia.</p></li>
+</ul>
+<pre class="r"><code>lbls &lt;- names(data1)
+pie(data1, labels = lbls, main=&quot;Gráfico Circular&quot;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="gráfico-de-barras-comparativo-2-variables" class="section level2">
+<h2>Gráfico de Barras comparativo (2 variables)</h2>
+<p># de Bicicletas prestadas por día:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">
+</th>
+<th style="text-align: right;">
+Sem.1
+</th>
+<th style="text-align: right;">
+Sem.2
+</th>
+<th style="text-align: right;">
+Sem.3
+</th>
+<th style="text-align: right;">
+Sem.4
+</th>
+<th style="text-align: right;">
+Sem.5
+</th>
+<th style="text-align: right;">
+Sem.6
+</th>
+<th style="text-align: right;">
+Sem.7
+</th>
+<th style="text-align: right;">
+Sem.8
+</th>
+<th style="text-align: right;">
+Sem.9
+</th>
+<th style="text-align: right;">
+Sem.10
+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">
+Lun
+</td>
+<td style="text-align: right;">
+68
+</td>
+<td style="text-align: right;">
+63
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+27
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+30
+</td>
+<td style="text-align: right;">
+36
+</td>
+<td style="text-align: right;">
+28
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;">
+12
+</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">
+Mar
+</td>
+<td style="text-align: right;">
+65
+</td>
+<td style="text-align: right;">
+43
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+74
+</td>
+<td style="text-align: right;">
+38
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+36
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+28
+</td>
+<td style="text-align: right;">
+47
+</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">
+Mie
+</td>
+<td style="text-align: right;">
+12
+</td>
+<td style="text-align: right;">
+32
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+38
+</td>
+<td style="text-align: right;">
+21
+</td>
+<td style="text-align: right;">
+42
+</td>
+<td style="text-align: right;">
+27
+</td>
+<td style="text-align: right;">
+31
+</td>
+<td style="text-align: right;">
+50
+</td>
+<td style="text-align: right;">
+23
+</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">
+Jue
+</td>
+<td style="text-align: right;">
+22
+</td>
+<td style="text-align: right;">
+43
+</td>
+<td style="text-align: right;">
+27
+</td>
+<td style="text-align: right;">
+49
+</td>
+<td style="text-align: right;">
+16
+</td>
+<td style="text-align: right;">
+28
+</td>
+<td style="text-align: right;">
+23
+</td>
+<td style="text-align: right;">
+19
+</td>
+<td style="text-align: right;">
+46
+</td>
+<td style="text-align: right;">
+49
+</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">
+Vie
+</td>
+<td style="text-align: right;">
+79
+</td>
+<td style="text-align: right;">
+27
+</td>
+<td style="text-align: right;">
+22
+</td>
+<td style="text-align: right;">
+23
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+24
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+44
+</td>
+<td style="text-align: right;">
+30
+</td>
+<td style="text-align: right;">
+24
+</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">
+Sab
+</td>
+<td style="text-align: right;">
+31
+</td>
+<td style="text-align: right;">
+28
+</td>
+<td style="text-align: right;">
+25
+</td>
+<td style="text-align: right;">
+45
+</td>
+<td style="text-align: right;">
+</td>
+<td style="text-align: right;">
+12
+</td>
+<td style="text-align: right;">
+57
+</td>
+<td style="text-align: right;">
+51
+</td>
+<td style="text-align: right;">
+43
+</td>
+<td style="text-align: right;">
+69
+</td>
+</tr>
+</tbody>
+</table>
+<!-- \\begin{table}[] -->
+<!-- \\centering -->
+<!-- \\begin{tabular}{rrrrrrrrrrr} -->
+<!--   \\hline -->
+<!--  & Sem.1 & Sem.2 & Sem.3 & Sem.4 & Sem.5 & Sem.6 & Sem.7 & Sem.8 & Sem.9 & Sem.10 \\\\ -->
+<!--   \\hline -->
+<!-- Lun &  68 &  63 &  42 &  27 &  &  30 &  36 &  28 &  32 &  12 \\\\ -->
+<!--   Mar &  65 &  43 &  25 &  74 &  38 &  51 &  36 &  42 &  28 &  47 \\\\ -->
+<!--   Mie &  12 &  32 &  49 &  38 &  21 &  42 &  27 &  31 &  50 &  23 \\\\ -->
+<!--   Jue &  22 &  43 &  27 &  49 &  16 &  28 &  23 &  19 &  46 &  49 \\\\ -->
+<!--   Vie &  79 &  27 &  22 &  23 &  &  24 &  25 &  44 &  30 &  24 \\\\ -->
+<!--   Sáb &  31 &  28 &  25 &  45 &  &  12 &  57 &  51 &  43 &  69 \\\\ -->
+<!--    \\hline -->
+<!-- \\end{tabular} -->
+<!-- \\end{table}} -->
+<pre class="r"><code>data2 &lt;- resumen[,c(&quot;Sem.1&quot;,&quot;Sem.4&quot;,&quot;Sem.8&quot;)]
+barplot(t(data2), beside = T, col = 3:5, xlab = &quot;Día&quot;, ylab = &quot;# préstamos&quot;)
+legend(&quot;topright&quot;, legend = colnames(data2), fil = 3:5)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+</div>
+<div id="histograma" class="section level2">
+<h2>Histograma</h2>
+<ul>
+<li><p>Permite representar graficamente tablas de frecuencia de variable numérica. </p></li>
+<li><p>Eje x: Variable numérica</p></li>
+<li><p>Eje y: Frecuencia.</p></li>
+</ul>
+<pre class="r"><code>h &lt;- hist(x, main=&#39;&#39;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Observe la siguiente tabla de frecuencias. ¿Qeé relación tiene con el histograma?</p>
+<pre class="r"><code>library(fdth)
+mi_tabla &lt;- fdt(x = x, start = 10, end = 80, right = TRUE,
+                h = 10)
+summary(mi_tabla)</code></pre>
+<pre><code>##  Class limits  f   rf rf(%) cf  cf(%)
+##       (10,20]  5 0.09  8.77  5   8.77
+##       (20,30] 20 0.35 35.09 25  43.86
+##       (30,40]  9 0.16 15.79 34  59.65
+##       (40,50] 14 0.25 24.56 48  84.21
+##       (50,60]  3 0.05  5.26 51  89.47
+##       (60,70]  4 0.07  7.02 55  96.49
+##       (70,80]  2 0.04  3.51 57 100.00</code></pre>
+</div>
+<div id="polígono-de-frecuencias-ojiva" class="section level2">
+<h2>Polígono de Frecuencias (Ojiva)</h2>
+<ul>
+<li><p>El gráfico es una serie de parejas ordendas unidas por rectas.</p></li>
+<li><p>Eje x: Variable aleatoria.</p></li>
+<li><p>Eje y: Frecuencia acumulada.</p></li>
+</ul>
+<pre class="r"><code># library(agricolae)
+ogive.freq(h, xlab=&#39;Número de préstamos&#39;, ylab=&#39;Relative frequency&#39;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre><code>##   Número de préstamos    RCF
+## 1                  10 0.0000
+## 2                  20 0.0877
+## 3                  30 0.4386
+## 4                  40 0.5965
+## 5                  50 0.8421
+## 6                  60 0.8947
+## 7                  70 0.9649
+## 8                  80 1.0000
+## 9                  90 1.0000</code></pre>
+</div>
+<div id="diagrama-de-pareto" class="section level2">
+<h2>Diagrama de Pareto</h2>
+<ul>
+<li><p>Se compone de un diagrama de barras, al cual se le superpone un gráfico de línea (polígono de frecuencia acumulada).</p></li>
+<li><p>Eje x: Variable categórica</p></li>
+<li><p>Eje y izquierdo: Frecuencia absoluta acumulada.</p></li>
+<li><p>Eje y derecho: Frecuencia relativa acumulada.</p></li>
+</ul>
+<p>Grafiquemos uno de estos para las bicicletas</p>
+<pre class="r"><code># library(qcc)
+pareto.chart(data1, ylab=&#39;# de Préstamos&#39;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<pre><code>##      
+## Pareto chart analysis for data1
+##        Frequency  Cum.Freq. Percentage Cum.Percent.
+##   Mar  411.00000  411.00000   20.36670     20.36670
+##   Sáb  361.00000  772.00000   17.88900     38.25570
+##   Lun  338.00000 1110.00000   16.74926     55.00496
+##   Jue  306.00000 1416.00000   15.16353     70.16848
+##   Mie  304.00000 1720.00000   15.06442     85.23290
+##   Vie  298.00000 2018.00000   14.76710    100.00000</code></pre>
+</div>
+</div>
+<div id="ejemplo-2" class="section level1">
+<h1>Ejemplo 2</h1>
+<div id="ejemplo-2-datos-iris-de-edgar-anderson" class="section level2">
+<h2>Ejemplo 2: datos <em>Iris</em>, de Edgar Anderson</h2>
+<p>La base de datos <code>iris</code>, disponible en R provee las medidas en centímetros de la longitud y ancho de los sépalos y de los pétalos de tres especies de flores.</p>
+<p><img src="1024px-Mature_flower_diagram.svg.png" width="70%" style="display: block; margin: auto;" />
+
+Extraido de <a href="https://en.wikipedia.org/wiki/Sepal">Wikipedia</a> </p>
+<p>Exploremos este conjunto de datos.</p>
+</div>
+<div id="ejemplo-2-datos-iris" class="section level2">
+<h2>Ejemplo 2: datos <em>Iris</em></h2>
+<pre class="r"><code># &#39;iris&#39; está cargado en R por defecto
+head(iris)</code></pre>
+<pre><code>##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+</div>
+<div id="diagrama-de-dispersión" class="section level2">
+<h2>Diagrama de dispersión</h2>
+<ul>
+<li><p>Para observar el comportamiento de dos variables Cuantitativas. </p></li>
+<li><p>Puntos en plano coordenado.  </p></li>
+<li><p>Eje x: Variable independiente</p></li>
+<li><p>Eje y: Variable de respuesta</p></li>
+</ul>
+<pre class="r"><code>plot(iris$Sepal.Length, iris$Petal.Length)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>Usemos ahora el paquete <code>ggplot2</code></p>
+<pre class="r"><code>ggplot(iris) +
+  aes(x = Sepal.Length, y = Petal.Length) +
+  geom_point()</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="matriz-de-diagramas-de-dispersión" class="section level2">
+<h2>Matriz de diagramas de dispersión</h2>
+<p>En este gráficos se grafican las parejas variables posibles en diagramas de dispersión.</p>
+<pre class="r"><code>plot(iris[,1:4])</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p>En <code>RcmdrMisc</code> hay otro buen gráfico.</p>
+<pre class="r"><code>scatterplotMatrix(~Petal.Length+Petal.Width+Sepal.Length+Sepal.Width | Species, 
+                  regLine=FALSE, smooth=FALSE, diagonal=list(method=&quot;density&quot;), 
+                  by.groups=TRUE, data=iris)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+</div>
+<div id="diagrama-de-dispersión-discriminado" class="section level2">
+<h2>Diagrama de dispersión discriminado</h2>
+<ul>
+<li><p>Para observar el comportamiento de dos variables Cuantitativas y una categórica. </p></li>
+<li><p>Puntos en plano coordenado.  </p></li>
+<li><p>Eje x: Variable independiente</p></li>
+<li><p>Eje y: Variable de respuesta</p></li>
+<li><p>Colores: variable categórica.</p></li>
+</ul>
+<pre class="r"><code>ggplot(iris) +
+  aes(x = Sepal.Length, y = Petal.Length, colour = Species) +
+  geom_point() +
+  scale_color_hue()</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
+</div>
+<div id="ejemplo-3" class="section level1">
+<h1>Ejemplo 3</h1>
+<div id="edad-de-muerte-de-los-reyes" class="section level2">
+<h2>Edad de muerte de los reyes</h2>
+<p>Examinemos una base de datos curiosa. Ésta contiene la edad que tenían varios reyes de Inglaterra en el momento de su fallecimiento.</p>
+<pre class="r"><code>kings &lt;- scan(&quot;http://robjhyndman.com/tsdldata/misc/kings.dat&quot;,skip=3)
+kings</code></pre>
+<pre><code>##  [1] 60 43 67 50 56 42 50 65 68 43 65 34 47 34 49 41 13 35 53 56 16 43 69 59 48
+## [26] 59 86 55 68 51 33 49 67 77 81 67 71 81 68 70 77 56</code></pre>
+</div>
+<div id="gráfico-de-línea" class="section level2">
+<h2>Gráfico de línea</h2>
+<p>Una manera de visualizar esta información es con los <strong>gráficos de línea de tiempo</strong>, también llamados <strong>gráficos de series de tiempo</strong>. Una forma sencilla de hacerlos es graficando una línea:</p>
+<pre class="r"><code>plot(kings, type = &#39;l&#39;)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-25-1.png" width="672" /></p>
+</div>
+</div>
+<div id="ejemplo-3-lidiando-con-fechas" class="section level1">
+<h1>Ejemplo 3: Lidiando con fechas</h1>
+<p>Tenemos un connunto de datos con las mediciones meteorológicas diarias de 2009 a 2011 de <em>NEON Harvard Forest field</em>. Examinemos como varía la temperatura del aire a través del tiempo. La variable de interés se llama <code>airt</code>.</p>
+<p>Primero, importemos los datos.</p>
+<pre class="r"><code>MetDiario.09.11 &lt;- read.csv(&quot;Met_HARV_Daily_2009_2011.csv&quot;)</code></pre>
+<p>Ahora vamos a asegurarnos de que la columna que tiene la fecha sea interpretada por <code>R</code> como una fecha:</p>
+<pre class="r"><code>MetDiario.09.11$date &lt;- as.Date(MetDiario.09.11$date)</code></pre>
+<p>La librería <strong>ggplot2</strong> permite hacer gráficos de series de tiempo de forma muy flexible.</p>
+<pre class="r"><code>ggplot(MetDiario.09.11, aes(date, airt)) + geom_line(na.rm=TRUE)</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<p>Si queremos tener en cuenta el detalle de los meses, debemos cambiar la escala del eje x.</p>
+<pre class="r"><code># library(lubridate)
+# library(scales)
+ggplot(MetDiario.09.11, aes(date, airt)) + geom_line(na.rm=TRUE) +
+  scale_x_date(labels=date_format(&quot;%b %y&quot;))</code></pre>
+<p><img src="/post/2020-10-08-clase-viii-algunas-gráficas-descriptivas_files/figure-html/unnamed-chunk-29-1.png" width="672" /></p>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
