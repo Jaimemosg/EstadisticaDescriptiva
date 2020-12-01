@@ -1,0 +1,180 @@
+---
+title: "Intervalos de confianza y pruebas de hipótesis en R"
+output: 
+  html_notebook: 
+    theme: readable
+---
+
+Tomemos unos datos disponibles en R y aprendamos a implementar las procedimientos básicos de inferencia estadística.
+
+## Paquetes necesarios
+
+```{r, message=FALSE, warning=FALSE}
+library(openintro)
+library(RcmdrMisc)
+library(ggplot2)
+
+# Tema blanco en ggplot2
+theme_set(theme_bw())
+```
+
+
+## Exploremos los datos
+
+Consideremos los datos de la encuesta del _National Center of Education Statistics._ (EUA).
+
+```{r, message=FALSE, warning=FALSE}
+# Resumen de los datos
+str(hsb2)
+```
+Exploremos algunas de las variables:
+
+```{r}
+with(hsb2, levels(factor(race)))
+with(hsb2, levels(prog))
+```
+
+Exploremos el desempeño en matemáticas.
+
+```{r}
+ggplot(data=hsb2, mapping=aes(x=math)) + geom_density(aes(fill=race),
+                                                      alpha=0.6)
+```
+
+```{r}
+ggplot(data=hsb2, mapping=aes(y=math, x=race)) + 
+  geom_boxplot(aes(fill=race))
+```
+
+### Estadísticos descriptivos
+
+```{r}
+numSummary(hsb2[,"math", drop=FALSE], groups=hsb2$race, 
+  statistics=c("mean", "sd", "IQR", "quantiles", "cv"), quantiles=c(0,.25,.5,
+  .75,1))
+```
+
+## Notación
+
+Hagamos inferencia sobre los parámetros de las poblaciones que confluyen en estos datos. Sea $\theta_{j}^i$ el puntaje promedio e el área $i$ para el grupo $j$, donde:
+
+- $\theta$ es cualquiera de los parámetros que hemos estudiado: $\mu, \sigma, p$
+
+- $i=\lbrace\text{r, w, s, m, ss}\rbrace$, que corresponde a `read, write, science, math, socst` respectivamente. 
+
+- $j=\lbrace\text{aa, a, h, w}\rbrace$, que corresponde a `african american, asian, hispanic, white`.
+
+\  
+
+# Inferencia sobre una población
+
+Consideremos la muestra de los hispanos:
+
+```{r}
+hispanic <- hsb2[hsb2$race=='hispanic',]
+hispanic
+```
+
+\  
+
+## Puntaje promedio para los hispanos en matemáticas
+
+Ya vimos que el promedio muestral tiene como resltado un valor de 47.42. ¿Existe evidencia para afirmar que el puntaje promedio de los hispanos en matemáticas es 50? Usemos un nivel de confianza de 94%.
+
+```{r}
+t.test(hispanic$math, conf.level = 0.94)
+```
+
+Entonces, $\mu_{h}^{(m)} \in (44.60,50.37)$.
+
+\  
+
+## Proporción de personas que aprobaron
+
+Suponga que el puntaje de corte para aprobar las pruebas es de 50. ¿Es válido afirmar que el 30% de los hombres aprueban en matemáticas?
+
+Vamos a identificar los éxitos.
+
+```{r}
+male <- hsb2[hsb2$gender=='male',]
+sucess1 <- male$math > 50
+sucess1
+```
+
+Ahora, vamos a contarlos.
+
+```{r}
+# Número de éxitos
+x1 <- sum(sucess1)
+x1
+```
+
+Además, sabemos que $n=91$. Entonces, usando un nivel de confianza de 93%:
+
+```{r}
+prop.test(x=x1, n=nrow(male), conf.level=0.93)
+```
+Entonces, $p_{h}^{(m)} \in (0.14,0.497)$.
+
+\  
+
+# Comparaciones (Inferencia sobre dos poblaciones)
+
+Ahora, también consideremos la muestra de los afroamericanos.
+
+```{r}
+africanam <- hsb2[hsb2$race=='african american',]
+africanam
+```
+
+\  
+
+## Cociente de Varianzas
+
+Como pudimos ver en la exploración de datos, $S_h^{(m)}=6.98$ y $S_{aa}^{(m)}=6.49$. ¿Tienen realmente la misma dispersión?
+
+```{r}
+var.test(hispanic$math, africanam$math)
+```
+
+Entonces, $\sigma_h^{2(m)} / \sigma_{aa}^{2(m)} \in (0.47,2.75)$.
+
+\  
+
+## Diferencia de medias
+
+Recordemos que $\bar{X}_h^m=47.42$ y $\bar{X}_a^m=46.75$. ¿Es realmente diferente el puntaje promedio de ambos grupos? Usemos un 95% de confianza.
+
+```{r}
+t.test(hispanic$math, africanam$math, conf.level=0.95,
+       var.equal=TRUE)
+```
+
+Entonces, $\mu_h^{(m)} - \mu_{aa}^{(m)} \in (-2.86,4.80)$.
+
+\  
+
+## Diferencia de proporciones
+
+Ahora, determinemos si hay diferencia en la proporción de personas que aprobaron según el género.
+
+```{r}
+female <- hsb2[hsb2$gender=='female',] 
+success2 <- female$math > 50
+success2
+```
+
+```{r}
+x2 <- sum(success2)
+x2
+```
+
+y ahora podemos aplicar una prueba para la diferencia de proporciones.
+
+```{r}
+nm <- nrow(male)
+nf <- nrow(female)
+prop.test(x=c(x1, x2), n=c(nm, nf))
+```
+
+Entonces, $p_h^{(m)} - p_{aa}^{(m)} \in (-0.15,0.13)$.

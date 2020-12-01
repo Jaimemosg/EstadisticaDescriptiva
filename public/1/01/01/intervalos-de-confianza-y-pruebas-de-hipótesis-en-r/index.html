@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.76.0" />
+
+
+<title>Intervalos de confianza y pruebas de hipótesis en R - Blog de Jaime</title>
+<meta property="og:title" content="Intervalos de confianza y pruebas de hipótesis en R - Blog de Jaime">
+
+
+  <link href='/Jlogo.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/Jlogo.png"
+         width="50"
+         height="50"
+         alt="Jlogo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="https://github.com/Jaimemosg/EstadisticaDescriptiva">GitHub</a></li>
+    
+    <li><a href="/about/">Información</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">8 min read</span>
+    
+
+    <h1 class="article-title">Intervalos de confianza y pruebas de hipótesis en R</h1>
+
+    
+    <span class="article-date">0001-01-01</span>
+    
+
+    <div class="article-content">
+      
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Tomemos unos datos disponibles en R y aprendamos a implementar las procedimientos básicos de inferencia estadística.</p>
+<div id="paquetes-necesarios" class="section level2">
+<h2>Paquetes necesarios</h2>
+<pre class="r"><code>library(openintro)
+library(RcmdrMisc)
+library(ggplot2)
+
+# Tema blanco en ggplot2
+theme_set(theme_bw())</code></pre>
+</div>
+<div id="exploremos-los-datos" class="section level2">
+<h2>Exploremos los datos</h2>
+<p>Consideremos los datos de la encuesta del <em>National Center of Education Statistics.</em> (EUA).</p>
+<pre class="r"><code># Resumen de los datos
+str(hsb2)</code></pre>
+<pre><code>## tibble [200 x 11] (S3: tbl_df/tbl/data.frame)
+##  $ id     : int [1:200] 70 121 86 141 172 113 50 11 84 48 ...
+##  $ gender : chr [1:200] &quot;male&quot; &quot;female&quot; &quot;male&quot; &quot;male&quot; ...
+##  $ race   : chr [1:200] &quot;white&quot; &quot;white&quot; &quot;white&quot; &quot;white&quot; ...
+##  $ ses    : Factor w/ 3 levels &quot;low&quot;,&quot;middle&quot;,..: 1 2 3 3 2 2 2 2 2 2 ...
+##  $ schtyp : Factor w/ 2 levels &quot;public&quot;,&quot;private&quot;: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ prog   : Factor w/ 3 levels &quot;general&quot;,&quot;academic&quot;,..: 1 3 1 3 2 2 1 2 1 2 ...
+##  $ read   : int [1:200] 57 68 44 63 47 44 50 34 63 57 ...
+##  $ write  : int [1:200] 52 59 33 44 52 52 59 46 57 55 ...
+##  $ math   : int [1:200] 41 53 54 47 57 51 42 45 54 52 ...
+##  $ science: int [1:200] 47 63 58 53 53 63 53 39 58 50 ...
+##  $ socst  : int [1:200] 57 61 31 56 61 61 61 36 51 51 ...</code></pre>
+<p>Exploremos algunas de las variables:</p>
+<pre class="r"><code>with(hsb2, levels(factor(race)))</code></pre>
+<pre><code>## [1] &quot;african american&quot; &quot;asian&quot;            &quot;hispanic&quot;         &quot;white&quot;</code></pre>
+<pre class="r"><code>with(hsb2, levels(prog))</code></pre>
+<pre><code>## [1] &quot;general&quot;    &quot;academic&quot;   &quot;vocational&quot;</code></pre>
+<p>Exploremos el desempeño en matemáticas.</p>
+<pre class="r"><code>ggplot(data=hsb2, mapping=aes(x=math)) + geom_density(aes(fill=race),
+                                                      alpha=0.6)</code></pre>
+<p><img src="/post/IC_PH_R_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(data=hsb2, mapping=aes(y=math, x=race)) + 
+  geom_boxplot(aes(fill=race))</code></pre>
+<p><img src="/post/IC_PH_R_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<div id="estadísticos-descriptivos" class="section level3">
+<h3>Estadísticos descriptivos</h3>
+<pre class="r"><code>numSummary(hsb2[,&quot;math&quot;, drop=FALSE], groups=hsb2$race, 
+  statistics=c(&quot;mean&quot;, &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;, &quot;cv&quot;), quantiles=c(0,.25,.5,
+  .75,1))</code></pre>
+<pre><code>##                      mean        sd  IQR        cv 0%   25% 50%   75% 100%
+## african american 46.75000  6.487843  6.5 0.1387774 39 42.75  45 49.25   67
+## asian            57.27273 10.120187 14.5 0.1767017 42 50.50  61 65.00   72
+## hispanic         47.41667  6.983936  9.0 0.1472886 33 43.00  47 52.00   61
+## white            53.97241  9.383011 13.0 0.1738483 35 47.00  54 60.00   75
+##                  math:n
+## african american     20
+## asian                11
+## hispanic             24
+## white               145</code></pre>
+</div>
+</div>
+<div id="notación" class="section level2">
+<h2>Notación</h2>
+<p>Hagamos inferencia sobre los parámetros de las poblaciones que confluyen en estos datos. Sea <span class="math inline">\(\theta_{j}^i\)</span> el puntaje promedio e el área <span class="math inline">\(i\)</span> para el grupo <span class="math inline">\(j\)</span>, donde:</p>
+<ul>
+<li><p><span class="math inline">\(\theta\)</span> es cualquiera de los parámetros que hemos estudiado: <span class="math inline">\(\mu, \sigma, p\)</span></p></li>
+<li><p><span class="math inline">\(i=\lbrace\text{r, w, s, m, ss}\rbrace\)</span>, que corresponde a <code>read, write, science, math, socst</code> respectivamente.</p></li>
+<li><p><span class="math inline">\(j=\lbrace\text{aa, a, h, w}\rbrace\)</span>, que corresponde a <code>african american, asian, hispanic, white</code>.</p></li>
+</ul>
+<p> </p>
+</div>
+<div id="inferencia-sobre-una-población" class="section level1">
+<h1>Inferencia sobre una población</h1>
+<p>Consideremos la muestra de los hispanos:</p>
+<pre class="r"><code>hispanic &lt;- hsb2[hsb2$race==&#39;hispanic&#39;,]
+hispanic</code></pre>
+<pre><code>## # A tibble: 24 x 11
+##       id gender race     ses    schtyp prog       read write  math science socst
+##    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;    &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;     &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt;
+##  1    11 male   hispanic middle public academic     34    46    45      39    36
+##  2    20 male   hispanic high   public academic     60    52    57      61    61
+##  3    12 male   hispanic middle public vocation~    37    44    45      39    46
+##  4    16 male   hispanic low    public vocation~    47    31    44      36    36
+##  5     7 male   hispanic middle public academic     57    54    59      47    51
+##  6    21 male   hispanic middle public general      44    44    61      50    46
+##  7    15 male   hispanic high   public vocation~    39    39    44      26    42
+##  8    22 male   hispanic middle public vocation~    42    39    39      56    46
+##  9     9 male   hispanic middle public vocation~    48    49    52      44    51
+## 10    18 male   hispanic middle public vocation~    50    33    49      44    36
+## # ... with 14 more rows</code></pre>
+<p> </p>
+<div id="puntaje-promedio-para-los-hispanos-en-matemáticas" class="section level2">
+<h2>Puntaje promedio para los hispanos en matemáticas</h2>
+<p>Ya vimos que el promedio muestral tiene como resltado un valor de 47.42. ¿Existe evidencia para afirmar que el puntaje promedio de los hispanos en matemáticas es 50? Usemos un nivel de confianza de 94%.</p>
+<pre class="r"><code>t.test(hispanic$math, conf.level = 0.94)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  hispanic$math
+## t = 33.261, df = 23, p-value &lt; 2.2e-16
+## alternative hypothesis: true mean is not equal to 0
+## 94 percent confidence interval:
+##  44.59649 50.23684
+## sample estimates:
+## mean of x 
+##  47.41667</code></pre>
+<p>Entonces, <span class="math inline">\(\mu_{h}^{(m)} \in (44.60,50.37)\)</span>.</p>
+<p> </p>
+</div>
+<div id="proporción-de-personas-que-aprobaron" class="section level2">
+<h2>Proporción de personas que aprobaron</h2>
+<p>Suponga que el puntaje de corte para aprobar las pruebas es de 50. ¿Es válido afirmar que el 30% de los hombres aprueban en matemáticas?</p>
+<p>Vamos a identificar los éxitos.</p>
+<pre class="r"><code>male &lt;- hsb2[hsb2$gender==&#39;male&#39;,]
+sucess1 &lt;- male$math &gt; 50
+sucess1</code></pre>
+<pre><code>##  [1] FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+## [13]  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE
+## [25] FALSE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE
+## [37]  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE  TRUE  TRUE
+## [49]  TRUE  TRUE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE
+## [61]  TRUE FALSE FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE
+## [73]  TRUE FALSE FALSE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE  TRUE FALSE FALSE
+## [85]  TRUE  TRUE FALSE FALSE  TRUE  TRUE FALSE</code></pre>
+<p>Ahora, vamos a contarlos.</p>
+<pre class="r"><code># Número de éxitos
+x1 &lt;- sum(sucess1)
+x1</code></pre>
+<pre><code>## [1] 51</code></pre>
+<p>Además, sabemos que <span class="math inline">\(n=91\)</span>. Entonces, usando un nivel de confianza de 93%:</p>
+<pre class="r"><code>prop.test(x=x1, n=nrow(male), conf.level=0.93)</code></pre>
+<pre><code>## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  x1 out of nrow(male), null probability 0.5
+## X-squared = 1.0989, df = 1, p-value = 0.2945
+## alternative hypothesis: true p is not equal to 0.5
+## 93 percent confidence interval:
+##  0.4602753 0.6561537
+## sample estimates:
+##         p 
+## 0.5604396</code></pre>
+<p>Entonces, <span class="math inline">\(p_{h}^{(m)} \in (0.14,0.497)\)</span>.</p>
+<p> </p>
+</div>
+</div>
+<div id="comparaciones-inferencia-sobre-dos-poblaciones" class="section level1">
+<h1>Comparaciones (Inferencia sobre dos poblaciones)</h1>
+<p>Ahora, también consideremos la muestra de los afroamericanos.</p>
+<pre class="r"><code>africanam &lt;- hsb2[hsb2$race==&#39;african american&#39;,]
+africanam</code></pre>
+<pre><code>## # A tibble: 20 x 11
+##       id gender race       ses    schtyp prog     read write  math science socst
+##    &lt;int&gt; &lt;chr&gt;  &lt;chr&gt;      &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;   &lt;int&gt; &lt;int&gt; &lt;int&gt;   &lt;int&gt; &lt;int&gt;
+##  1    50 male   african a~ middle public general    50    59    42      53    61
+##  2    48 male   african a~ middle public academ~    57    55    52      50    51
+##  3    38 male   african a~ low    public academ~    45    57    50      31    56
+##  4    41 male   african a~ middle public academ~    50    40    45      55    56
+##  5    53 male   african a~ middle public vocati~    34    37    46      39    31
+##  6    40 male   african a~ low    public general    42    41    43      50    41
+##  7    49 male   african a~ high   public vocati~    50    40    39      49    47
+##  8    47 female african a~ low    public academ~    47    46    49      33    41
+##  9    54 female african a~ low    priva~ general    47    54    46      50    56
+## 10    37 female african a~ low    public vocati~    41    47    40      39    51
+## 11    44 female african a~ low    public vocati~    47    62    45      34    46
+## 12    45 female african a~ low    public vocati~    34    35    41      29    26
+## 13    42 female african a~ middle public vocati~    46    52    55      44    56
+## 14    55 female african a~ middle priva~ academ~    52    49    49      44    61
+## 15    46 female african a~ low    public academ~    45    55    44      34    41
+## 16    43 female african a~ low    public academ~    47    37    43      42    46
+## 17    39 female african a~ high   public academ~    66    67    67      61    66
+## 18    51 female african a~ high   public general    42    36    42      31    39
+## 19    36 female african a~ low    public general    44    49    44      35    51
+## 20    52 female african a~ low    public academ~    50    46    53      53    66</code></pre>
+<p> </p>
+<div id="cociente-de-varianzas" class="section level2">
+<h2>Cociente de Varianzas</h2>
+<p>Como pudimos ver en la exploración de datos, <span class="math inline">\(S_h^{(m)}=6.98\)</span> y <span class="math inline">\(S_{aa}^{(m)}=6.49\)</span>. ¿Tienen realmente la misma dispersión?</p>
+<pre class="r"><code>var.test(hispanic$math, africanam$math)</code></pre>
+<pre><code>## 
+##  F test to compare two variances
+## 
+## data:  hispanic$math and africanam$math
+## F = 1.1588, num df = 23, denom df = 19, p-value = 0.7511
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.4701324 2.7514766
+## sample estimates:
+## ratio of variances 
+##           1.158777</code></pre>
+<p>Entonces, <span class="math inline">\(\sigma_h^{2(m)} / \sigma_{aa}^{2(m)} \in (0.47,2.75)\)</span>.</p>
+<p> </p>
+</div>
+<div id="diferencia-de-medias" class="section level2">
+<h2>Diferencia de medias</h2>
+<p>Recordemos que <span class="math inline">\(\bar{X}_h^m=47.42\)</span> y <span class="math inline">\(\bar{X}_a^m=46.75\)</span>. ¿Es realmente diferente el puntaje promedio de ambos grupos? Usemos un 95% de confianza.</p>
+<pre class="r"><code>t.test(hispanic$math, africanam$math, conf.level=0.95,
+       var.equal=TRUE)</code></pre>
+<pre><code>## 
+##  Two Sample t-test
+## 
+## data:  hispanic$math and africanam$math
+## t = 0.32554, df = 42, p-value = 0.7464
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -3.466181  4.799515
+## sample estimates:
+## mean of x mean of y 
+##  47.41667  46.75000</code></pre>
+<p>Entonces, <span class="math inline">\(\mu_h^{(m)} - \mu_{aa}^{(m)} \in (-2.86,4.80)\)</span>.</p>
+<p> </p>
+</div>
+<div id="diferencia-de-proporciones" class="section level2">
+<h2>Diferencia de proporciones</h2>
+<p>Ahora, determinemos si hay diferencia en la proporción de personas que aprobaron según el género.</p>
+<pre class="r"><code>female &lt;- hsb2[hsb2$gender==&#39;female&#39;,] 
+success2 &lt;- female$math &gt; 50
+success2</code></pre>
+<pre><code>##   [1]  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE
+##  [13]  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE
+##  [25] FALSE  TRUE  TRUE  TRUE FALSE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE
+##  [37]  TRUE  TRUE FALSE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE  TRUE FALSE
+##  [49] FALSE FALSE FALSE  TRUE FALSE  TRUE FALSE FALSE FALSE FALSE FALSE FALSE
+##  [61]  TRUE FALSE FALSE  TRUE  TRUE FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE
+##  [73]  TRUE FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE FALSE FALSE  TRUE FALSE
+##  [85]  TRUE  TRUE  TRUE FALSE  TRUE FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE
+##  [97] FALSE  TRUE  TRUE FALSE FALSE  TRUE FALSE  TRUE  TRUE FALSE  TRUE  TRUE
+## [109]  TRUE</code></pre>
+<pre class="r"><code>x2 &lt;- sum(success2)
+x2</code></pre>
+<pre><code>## [1] 62</code></pre>
+<p>y ahora podemos aplicar una prueba para la diferencia de proporciones.</p>
+<pre class="r"><code>nm &lt;- nrow(male)
+nf &lt;- nrow(female)
+prop.test(x=c(x1, x2), n=c(nm, nf))</code></pre>
+<pre><code>## 
+##  2-sample test for equality of proportions with continuity correction
+## 
+## data:  c(x1, x2) out of c(nm, nf)
+## X-squared = 4.6793e-30, df = 1, p-value = 1
+## alternative hypothesis: two.sided
+## 95 percent confidence interval:
+##  -0.1547322  0.1379967
+## sample estimates:
+##    prop 1    prop 2 
+## 0.5604396 0.5688073</code></pre>
+<p>Entonces, <span class="math inline">\(p_h^{(m)} - p_{aa}^{(m)} \in (-0.15,0.13)\)</span>.</p>
+</div>
+</div>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
