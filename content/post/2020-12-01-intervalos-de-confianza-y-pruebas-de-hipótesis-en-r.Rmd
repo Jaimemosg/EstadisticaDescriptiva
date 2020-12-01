@@ -1,8 +1,10 @@
 ---
-title: "Intervalos de confianza y pruebas de hipótesis en R"
-output: 
-  html_notebook: 
-    theme: readable
+title: 'Intervalos de confianza y pruebas de hipótesis en R'
+author: 'Jaime Mosquera'
+date: '2020-12-01'
+slug: intervalos-de-confianza-y-pruebas-de-hipótesis-en-r
+categories: []
+tags: []
 ---
 
 Tomemos unos datos disponibles en R y aprendamos a implementar las procedimientos básicos de inferencia estadística.

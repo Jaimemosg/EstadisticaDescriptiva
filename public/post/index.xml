@@ -6,7 +6,18 @@
     <description>Recent content in Posts on Blog de Jaime</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Thu, 08 Oct 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 01 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Intervalos de confianza y pruebas de hipótesis en R</title>
+      <link>/2020/12/01/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</link>
+      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/2020/12/01/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</guid>
+      <description>Tomemos unos datos disponibles en R y aprendamos a implementar las procedimientos básicos de inferencia estadística.
+Paquetes necesarioslibrary(openintro)library(RcmdrMisc)library(ggplot2)# Tema blanco en ggplot2theme_set(theme_bw())Exploremos los datosConsideremos los datos de la encuesta del National Center of Education Statistics. (EUA).
+# Resumen de los datosstr(hsb2)## tibble [200 x 11] (S3: tbl_df/tbl/data.frame)## $ id : int [1:200] 70 121 86 141 172 113 50 11 84 48 .</description>
+    </item>
+    
     <item>
       <title>Clase VIII: Algunas gráficas descriptivas</title>
       <link>/2020/10/08/clase-viii-algunas-gr%C3%A1ficas-descriptivas/</link>
@@ -36,17 +47,6 @@ Vamos a tener en cuenta este ejemplo para los gráficos que vamos a aprender en 
       <guid>/2020/02/10/estad%C3%ADstica-desciptiva-en-python/</guid>
       <description>Estadística Descriptiva en PythonDatos de los estudiantesEste es el mismo ejercicio de la sesión anterior. En esta ocasión, dejamos de lado R, para explorar algunas herramientas disponibles en Python.
 De nuevo, vamos a trabajar con una muestra aleatoria de una gran base de datos. La base original corresponde a la información de 202 estudiantes de la Universidad de Antioquia. Dicha base contiene las variables: MASA (en kg), ESTATURA (en cm.</description>
-    </item>
-    
-    <item>
-      <title>Intervalos de confianza y pruebas de hipótesis en R</title>
-      <link>/1/01/01/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/1/01/01/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</guid>
-      <description>Tomemos unos datos disponibles en R y aprendamos a implementar las procedimientos básicos de inferencia estadística.
-Paquetes necesarioslibrary(openintro)library(RcmdrMisc)library(ggplot2)# Tema blanco en ggplot2theme_set(theme_bw())Exploremos los datosConsideremos los datos de la encuesta del National Center of Education Statistics. (EUA).
-# Resumen de los datosstr(hsb2)## tibble [200 x 11] (S3: tbl_df/tbl/data.frame)## $ id : int [1:200] 70 121 86 141 172 113 50 11 84 48 .</description>
     </item>
     
   </channel>
