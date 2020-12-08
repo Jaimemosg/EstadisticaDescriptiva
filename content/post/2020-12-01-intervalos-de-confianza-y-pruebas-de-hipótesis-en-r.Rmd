@@ -17,8 +17,8 @@ library(ggplot2)
 # Tema blanco en ggplot2
 theme_set(theme_bw())
 
-if (!require('devtools')) install.packages('devtools')
-devtools::install_github('fhernanb/stests', force=TRUE)
+# if (!require('devtools')) install.packages('devtools')
+# devtools::install_github('fhernanb/stests', force=TRUE)
 library(stests)
 ```
 
