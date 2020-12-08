@@ -146,8 +146,8 @@ Como hipótesis, se formula así:
 
 $$
 \begin{aligned}
-H_0&: p_{h}^{(m)} = 50 \\
-H_1&: p_{h}^{(m)} \neq 50
+H_0&: p_{h}^{(m)} = 0.3 \\
+H_1&: p_{h}^{(m)} \neq 0.3
 \end{aligned}
 $$
 
@@ -213,8 +213,8 @@ Como hipótesis, se formula así:
 
 $$
 \begin{aligned}
-H_0&: \mu_{h}^{(m)} = \mu_{aa}^{(m)} \\
-H_1&: \mu_{h}^{(m)} \neq \mu_{aa}^{(m)}
+H_0&: \mu_{h}^{(m)} - \mu_{aa}^{(m)} = 0 \\
+H_1&: \mu_{h}^{(m)} - \mu_{aa}^{(m)} \neq 0
 \end{aligned}
 $$
 
