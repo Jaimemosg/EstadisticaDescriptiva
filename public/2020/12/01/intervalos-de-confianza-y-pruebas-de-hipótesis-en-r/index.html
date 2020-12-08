@@ -60,7 +60,7 @@
 
   <article class="article">
     
-    <span class="article-duration">8 min read</span>
+    <span class="article-duration">11 min read</span>
     
 
     <h1 class="article-title">Intervalos de confianza y pruebas de hipótesis en R</h1>
@@ -82,7 +82,49 @@ library(RcmdrMisc)
 library(ggplot2)
 
 # Tema blanco en ggplot2
-theme_set(theme_bw())</code></pre>
+theme_set(theme_bw())
+
+if (!require(&#39;devtools&#39;)) install.packages(&#39;devtools&#39;)
+devtools::install_github(&#39;fhernanb/stests&#39;, force=TRUE)</code></pre>
+<pre><code>## 
+##   
+  
+  
+   checking for file &#39;C:\Users\jaime\AppData\Local\Temp\RtmpOUgBzb\remotes17c6ee87a1e\fhernanb-stests-02317bd/DESCRIPTION&#39; ...
+  
+   checking for file &#39;C:\Users\jaime\AppData\Local\Temp\RtmpOUgBzb\remotes17c6ee87a1e\fhernanb-stests-02317bd/DESCRIPTION&#39; ... 
+  
+v  checking for file &#39;C:\Users\jaime\AppData\Local\Temp\RtmpOUgBzb\remotes17c6ee87a1e\fhernanb-stests-02317bd/DESCRIPTION&#39; (864ms)
+## 
+  
+  
+  
+-  preparing &#39;stests&#39;: (707ms)
+##    checking DESCRIPTION meta-information ...
+  
+   checking DESCRIPTION meta-information ... 
+  
+v  checking DESCRIPTION meta-information
+## 
+  
+  
+  
+-  checking for LF line-endings in source and make files and shell scripts (618ms)
+## 
+  
+  
+  
+-  checking for empty or unneeded directories
+## 
+  
+  
+  
+-  building &#39;stests_0.1.0.tar.gz&#39;
+## 
+  
+   
+## </code></pre>
+<pre class="r"><code>library(stests)</code></pre>
 </div>
 <div id="exploremos-los-datos" class="section level2">
 <h2>Exploremos los datos</h2>
@@ -115,9 +157,10 @@ str(hsb2)</code></pre>
 <p><img src="/post/2020-12-01-intervalos-de-confianza-y-pruebas-de-hipótesis-en-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <div id="estadísticos-descriptivos" class="section level3">
 <h3>Estadísticos descriptivos</h3>
-<pre class="r"><code>numSummary(hsb2[,&quot;math&quot;, drop=FALSE], groups=hsb2$race, 
-  statistics=c(&quot;mean&quot;, &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;, &quot;cv&quot;), quantiles=c(0,.25,.5,
-  .75,1))</code></pre>
+<pre class="r"><code>resumen &lt;- numSummary(hsb2[,&quot;math&quot;, drop=FALSE], groups=hsb2$race, 
+  statistics=c(&quot;mean&quot;, &quot;sd&quot;, &quot;IQR&quot;, &quot;quantiles&quot;, &quot;cv&quot;), 
+  quantiles=c(0,.25,.5, .75,1))
+resumen</code></pre>
 <pre><code>##                      mean        sd  IQR        cv 0%   25% 50%   75% 100%
 ## african american 46.75000  6.487843  6.5 0.1387774 39 42.75  45 49.25   67
 ## asian            57.27273 10.120187 14.5 0.1767017 42 50.50  61 65.00   72
@@ -163,19 +206,46 @@ hispanic</code></pre>
 <div id="puntaje-promedio-para-los-hispanos-en-matemáticas" class="section level2">
 <h2>Puntaje promedio para los hispanos en matemáticas</h2>
 <p>Ya vimos que el promedio muestral tiene como resltado un valor de 47.42. ¿Existe evidencia para afirmar que el puntaje promedio de los hispanos en matemáticas es 50? Usemos un nivel de confianza de 94%.</p>
-<pre class="r"><code>t.test(hispanic$math, conf.level = 0.94)</code></pre>
+<pre class="r"><code>t.test(hispanic$math, conf.level = 0.94, alternative=&#39;two.sided&#39;,
+       mu=50)</code></pre>
 <pre><code>## 
 ##  One Sample t-test
 ## 
 ## data:  hispanic$math
-## t = 33.261, df = 23, p-value &lt; 2.2e-16
-## alternative hypothesis: true mean is not equal to 0
+## t = -1.8121, df = 23, p-value = 0.08305
+## alternative hypothesis: true mean is not equal to 50
 ## 94 percent confidence interval:
 ##  44.59649 50.23684
 ## sample estimates:
 ## mean of x 
 ##  47.41667</code></pre>
-<p>Entonces, <span class="math inline">\(\mu_{h}^{(m)} \in (44.60,50.37)\)</span>.</p>
+<p>Como hipótesis, se formula así:</p>
+<p><span class="math display">\[
+\begin{aligned}
+H_0&amp;: \mu_{h}^{(m)} = 50 \\
+H_1&amp;: \mu_{h}^{(m)} \neq 50
+\end{aligned}
+\]</span></p>
+<ul>
+<li><p>Conclusión de la hipótesis: como <span class="math inline">\(valor-p = 5.93e-21 &gt; 0.06\)</span>, no se rechaza <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Intervalo de confianza: <span class="math inline">\(\mu_{h}^{(m)} \in (44.60,50.37)\)</span>.</p></li>
+<li><p>Hagamos la prueba usando estadísticos de resumen, en vez de usar los datos crudos:</p></li>
+</ul>
+<pre class="r"><code>meanx &lt;- 47.41667
+varx &lt;- 6.983936^2
+t_test(meanx=meanx, varx=varx, nx=24,
+       mu=50, alternative=&#39;two.sided&#39;)</code></pre>
+<pre><code>## 
+##  One Sample t-test
+## 
+## data:  meanx = 47.41667, var = 48.775362052096 and nx = 24
+## t = -1.8121, df = 23, p-value = 0.08305
+## alternative hypothesis: true mean is not equal to 50
+## 95 percent confidence interval:
+##  44.46761 50.36573
+## sample estimates:
+## mean of x 
+##  47.41667</code></pre>
 <p> </p>
 </div>
 <div id="proporción-de-personas-que-aprobaron" class="section level2">
@@ -199,7 +269,8 @@ x1 &lt;- sum(sucess1)
 x1</code></pre>
 <pre><code>## [1] 51</code></pre>
 <p>Además, sabemos que <span class="math inline">\(n=91\)</span>. Entonces, usando un nivel de confianza de 93%:</p>
-<pre class="r"><code>prop.test(x=x1, n=nrow(male), conf.level=0.93)</code></pre>
+<pre class="r"><code>prop.test(x=x1, n=nrow(male), conf.level=0.93,
+          alternative=&#39;two.sided&#39;)</code></pre>
 <pre><code>## 
 ##  1-sample proportions test with continuity correction
 ## 
@@ -211,7 +282,17 @@ x1</code></pre>
 ## sample estimates:
 ##         p 
 ## 0.5604396</code></pre>
-<p>Entonces, <span class="math inline">\(p_{h}^{(m)} \in (0.14,0.497)\)</span>.</p>
+<p>Como hipótesis, se formula así:</p>
+<p><span class="math display">\[
+\begin{aligned}
+H_0&amp;: p_{h}^{(m)} = 50 \\
+H_1&amp;: p_{h}^{(m)} \neq 50
+\end{aligned}
+\]</span></p>
+<ul>
+<li><p>Conclusión de la hipótesis: como <span class="math inline">\(valor-p = 0.295 &gt; 0.07\)</span>, no se rechaza <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Intervalo de confianza: <span class="math inline">\(p_{h}^{(m)} \in (0.14,0.497)\)</span>.</p></li>
+</ul>
 <p> </p>
 </div>
 </div>
@@ -247,11 +328,11 @@ africanam</code></pre>
 <div id="cociente-de-varianzas" class="section level2">
 <h2>Cociente de Varianzas</h2>
 <p>Como pudimos ver en la exploración de datos, <span class="math inline">\(S_h^{(m)}=6.98\)</span> y <span class="math inline">\(S_{aa}^{(m)}=6.49\)</span>. ¿Tienen realmente la misma dispersión?</p>
-<pre class="r"><code>var.test(hispanic$math, africanam$math)</code></pre>
+<pre class="r"><code>var.test(hispanic$math, africanam$math, alternative=&#39;two.sided&#39;)</code></pre>
 <pre><code>## 
 ##  F test to compare two variances
 ## 
-## data:  hispanic$math and africanam$math
+## data:  hispanic$math  and  africanam$math
 ## F = 1.1588, num df = 23, denom df = 19, p-value = 0.7511
 ## alternative hypothesis: true ratio of variances is not equal to 1
 ## 95 percent confidence interval:
@@ -259,14 +340,40 @@ africanam</code></pre>
 ## sample estimates:
 ## ratio of variances 
 ##           1.158777</code></pre>
-<p>Entonces, <span class="math inline">\(\sigma_h^{2(m)} / \sigma_{aa}^{2(m)} \in (0.47,2.75)\)</span>.</p>
+<p>Como hipótesis, se formula así:</p>
+<p><span class="math display">\[
+\begin{aligned}
+H_0&amp;: \sigma_{h}^{2\:(m)} = \sigma_{aa}^{2\:(m)} \\
+H_1&amp;: \sigma_{h}^{2\:(m)} \neq \sigma_{aa}^{2\:(m)}
+\end{aligned}
+\]</span></p>
+<ul>
+<li><p>Conclusión de la hipótesis: como <span class="math inline">\(valor-p = 0.751 &gt; 0.05\)</span>, no se rechaza <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Intervalo de confianza: <span class="math inline">\(\sigma_h^{2\:(m)} / \sigma_{aa}^{2\:(m)} \in (0.47,2.75)\)</span>.</p></li>
+<li><p>Hagamos la prueba usando estadísticos de resumen, en vez de usar los datos crudos:</p></li>
+</ul>
+<pre class="r"><code>varx &lt;- 6.983936^2
+vary &lt;- 6.487843^2
+var_test(varx=varx, vary=vary, nx=24, ny=20,
+         alternative=&#39;two.sided&#39;)</code></pre>
+<pre><code>## 
+##  F test to compare two variances
+## 
+## data:  varx = 48.775362052096 , nx = 24 , vary = 42.092106792649 and ny = 20
+## F = 1.1588, num df = 23, denom df = 19, p-value = 0.7511
+## alternative hypothesis: true ratio of variances is not equal to 1
+## 95 percent confidence interval:
+##  0.4701323 2.7514765
+## sample estimates:
+## ratio of variances 
+##           1.158777</code></pre>
 <p> </p>
 </div>
 <div id="diferencia-de-medias" class="section level2">
 <h2>Diferencia de medias</h2>
 <p>Recordemos que <span class="math inline">\(\bar{X}_h^m=47.42\)</span> y <span class="math inline">\(\bar{X}_a^m=46.75\)</span>. ¿Es realmente diferente el puntaje promedio de ambos grupos? Usemos un 95% de confianza.</p>
 <pre class="r"><code>t.test(hispanic$math, africanam$math, conf.level=0.95,
-       var.equal=TRUE)</code></pre>
+       var.equal=TRUE, alternative=&#39;two.sided&#39;)</code></pre>
 <pre><code>## 
 ##  Two Sample t-test
 ## 
@@ -278,7 +385,35 @@ africanam</code></pre>
 ## sample estimates:
 ## mean of x mean of y 
 ##  47.41667  46.75000</code></pre>
-<p>Entonces, <span class="math inline">\(\mu_h^{(m)} - \mu_{aa}^{(m)} \in (-2.86,4.80)\)</span>.</p>
+<p>Como hipótesis, se formula así:</p>
+<p><span class="math display">\[
+\begin{aligned}
+H_0&amp;: \mu_{h}^{(m)} = \mu_{aa}^{(m)} \\
+H_1&amp;: \mu_{h}^{(m)} \neq \mu_{aa}^{(m)}
+\end{aligned}
+\]</span></p>
+<ul>
+<li><p>Conclusión de la hipótesis: como <span class="math inline">\(valor-p = 0.751 &gt; 0.05\)</span>, no se rechaza <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Intervalo de confianza: <span class="math inline">\(\mu_h^{(m)} - \mu_{aa}^{(m)} \in (-2.86,4.80)\)</span>.</p></li>
+<li><p>Hagamos la prueba usando estadísticos de resumen, en vez de usar los datos crudos:</p></li>
+</ul>
+<pre class="r"><code>meanx &lt;- 47.41667
+varx &lt;- 6.983936^2
+meany &lt;- 46.750
+vary &lt;- 6.487843^2
+t_test(meanx=meanx, varx=varx, meany=meany, vary=vary,
+       nx=24, ny=20, alternative=&#39;two.sided&#39;)</code></pre>
+<pre><code>## 
+##  Welch Two Sample t-test
+## 
+## data:  meanx = 47.41667, nx = 24, meany = 46.75 and ny = 20
+## t = 0.32777, df = 41.468, p-value = 0.7447
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -3.439547  4.772887
+## sample estimates:
+## mean of x mean of y 
+##  47.41667  46.75000</code></pre>
 <p> </p>
 </div>
 <div id="diferencia-de-proporciones" class="section level2">
@@ -303,7 +438,7 @@ x2</code></pre>
 <p>y ahora podemos aplicar una prueba para la diferencia de proporciones.</p>
 <pre class="r"><code>nm &lt;- nrow(male)
 nf &lt;- nrow(female)
-prop.test(x=c(x1, x2), n=c(nm, nf))</code></pre>
+prop.test(x=c(x1, x2), n=c(nm, nf), alternative=&#39;two.sided&#39;)</code></pre>
 <pre><code>## 
 ##  2-sample test for equality of proportions with continuity correction
 ## 
@@ -315,7 +450,17 @@ prop.test(x=c(x1, x2), n=c(nm, nf))</code></pre>
 ## sample estimates:
 ##    prop 1    prop 2 
 ## 0.5604396 0.5688073</code></pre>
-<p>Entonces, <span class="math inline">\(p_h^{(m)} - p_{aa}^{(m)} \in (-0.15,0.13)\)</span>.</p>
+<p>Como hipótesis, se formula así:</p>
+<p><span class="math display">\[
+\begin{aligned}
+H_0&amp;: p_{h}^{(m)} = p_{aa}^{(m)} \\
+H_1&amp;: p_{h}^{(m)} \neq p_{aa}^{(m)}
+\end{aligned}
+\]</span></p>
+<ul>
+<li><p>Conclusión de la hipótesis: como <span class="math inline">\(valor-p = 0.751 &gt; 0.05\)</span>, no se rechaza <span class="math inline">\(H_0\)</span>.</p></li>
+<li><p>Intervalo de confianza: <span class="math inline">\(p_h^{(m)} - p_{aa}^{(m)} \in (-0.15,0.13)\)</span>.</p></li>
+</ul>
 </div>
 </div>
 
