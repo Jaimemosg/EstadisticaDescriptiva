@@ -87,7 +87,7 @@ hispanic
 Ya vimos que el promedio muestral tiene como resltado un valor de 47.42. ¿Existe evidencia para afirmar que el puntaje promedio de los hispanos en matemáticas es 50? Usemos un nivel de confianza de 94%. 
 
 ```{r}
-t.test(hispanic$math, conf.level = 0.94, alternative='two.sided',
+t.test(hispanic$math, conf.level=0.94, alternative='two.sided',
        mu=50)
 ```
 
@@ -100,16 +100,16 @@ H_1&: \mu_{h}^{(m)} \neq 50
 \end{aligned}
 $$
 
-- Conclusión de la hipótesis: como $valor-p = `r format(t.test(hispanic$math, conf.level = 0.94)$p.value, digits=3)` > 0.06$, no se rechaza $H_0$.
+- Conclusión de la hipótesis: como $valor-p = `r format(t.test(hispanic$math, conf.level=0.94, mu=50)$p.value, digits=3)` > 0.06$, no se rechaza $H_0$.
 
-- Intervalo de confianza: $\mu_{h}^{(m)} \in (44.60,50.37)$.
+- Intervalo de confianza: $\mu_{h}^{(m)} \in (`r format(t.test(hispanic$math, conf.level=0.94, mu=50)$conf.int[1], digits=3)`,`r format(t.test(hispanic$math, conf.level=0.94, mu=50)$conf.int[2], digits=3)`)$.
 
 - Hagamos la prueba usando estadísticos de resumen, en vez de usar los datos crudos:
 
 ```{r}
 meanx <- 47.41667
 varx <- 6.983936^2
-t_test(meanx=meanx, varx=varx, nx=24,
+t_test(meanx=meanx, varx=varx, nx=24, conf.level=0.94,
        mu=50, alternative='two.sided')
 ```
 
@@ -139,7 +139,7 @@ Además, sabemos que $n=91$. Entonces, usando un nivel de confianza de 93%:
 
 ```{r}
 prop.test(x=x1, n=nrow(male), conf.level=0.93,
-          alternative='two.sided')
+          alternative='two.sided', p=0.3)
 ```
 
 Como hipótesis, se formula así:
@@ -151,9 +151,9 @@ H_1&: p_{h}^{(m)} \neq 0.3
 \end{aligned}
 $$
 
-- Conclusión de la hipótesis: como $valor-p = `r format(prop.test(x=x1, n=nrow(male), conf.level=0.93)$p.value, digits=3)` > 0.07$, no se rechaza $H_0$.
+- Conclusión de la hipótesis: como $valor-p = `r format(prop.test(x=x1, n=nrow(male), conf.level=0.93, p=0.3)$p.value, digits=3)` < 0.07$, se rechaza $H_0$.
 
-- Intervalo de confianza: $p_{h}^{(m)} \in (0.14,0.497)$.
+- Intervalo de confianza: $p_{h}^{(m)} \in (`r format(prop.test(x=x1, n=nrow(male), conf.level=0.93, p=0.3)$conf.int[1], digits=3)`,`r format(prop.test(x=x1, n=nrow(male), conf.level=0.93, p=0.3)$conf.int[2], digits=3)`)$.
 
 \  
 
@@ -187,7 +187,7 @@ $$
 
 - Conclusión de la hipótesis: como $valor-p = `r format(var.test(hispanic$math, africanam$math)$p.value, digits=3)` > 0.05$, no se rechaza $H_0$.
 
-- Intervalo de confianza: $\sigma_h^{2\:(m)} / \sigma_{aa}^{2\:(m)} \in (0.47,2.75)$.
+- Intervalo de confianza: $\sigma_h^{2\:(m)} / \sigma_{aa}^{2\:(m)} \in (`r format(var.test(hispanic$math, africanam$math)$conf.int[1], digits=3)`,`r format(var.test(hispanic$math, africanam$math)$conf.int[2], digits=3)`)$.
 
 - Hagamos la prueba usando estadísticos de resumen, en vez de usar los datos crudos:
 
@@ -220,7 +220,7 @@ $$
 
 - Conclusión de la hipótesis: como $valor-p = `r format(var.test(hispanic$math, africanam$math)$p.value, digits=3)` > 0.05$, no se rechaza $H_0$.
 
-- Intervalo de confianza: $\mu_h^{(m)} - \mu_{aa}^{(m)} \in (-2.86,4.80)$.
+- Intervalo de confianza: $\mu_h^{(m)} - \mu_{aa}^{(m)} \in (`r format(t.test(hispanic$math, africanam$math, conf.level=0.95, var.equal=TRUE, alternative='two.sided')$conf.int[1], digits=3)`, `r format(t.test(hispanic$math, africanam$math, conf.level=0.95, var.equal=TRUE, alternative='two.sided')$conf.int[2], digits=3)`)$.
 
 - Hagamos la prueba usando estadísticos de resumen, en vez de usar los datos crudos:
 
@@ -267,6 +267,6 @@ H_1&: p_{h}^{(m)} \neq p_{aa}^{(m)}
 \end{aligned}
 $$
 
-- Conclusión de la hipótesis: como $valor-p = `r format(var.test(hispanic$math, africanam$math)$p.value, digits=3)` > 0.05$, no se rechaza $H_0$.
+- Conclusión de la hipótesis: como $valor-p = `r format(prop.test(x=c(x1, x2), n=c(nm, nf), alternative='two.sided')$p.value, digits=3)` > 0.05$, no se rechaza $H_0$.
 
-- Intervalo de confianza: $p_h^{(m)} - p_{aa}^{(m)} \in (-0.15,0.13)$.
+- Intervalo de confianza: $p_h^{(m)} - p_{aa}^{(m)} \in (`r format(prop.test(x=c(x1, x2), n=c(nm, nf), alternative='two.sided')$conf.int[1], digits=3)`,`r format(prop.test(x=c(x1, x2), n=c(nm, nf), alternative='two.sided')$conf.int[2], digits=3)`)$.
