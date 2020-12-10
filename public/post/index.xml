@@ -6,13 +6,13 @@
     <description>Recent content in Posts on Blog de Jaime</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 01 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Dec 2020 00:00:00 +0000</lastBuildDate><atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Intervalos de confianza y pruebas de hipótesis en R</title>
-      <link>/2020/12/01/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
+      <link>/2020/12/09/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</link>
+      <pubDate>Wed, 09 Dec 2020 00:00:00 +0000</pubDate>
       
-      <guid>/2020/12/01/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</guid>
+      <guid>/2020/12/09/intervalos-de-confianza-y-pruebas-de-hip%C3%B3tesis-en-r/</guid>
       <description>Tomemos unos datos disponibles en R y aprendamos a implementar las procedimientos básicos de inferencia estadística.
 Paquetes necesarioslibrary(openintro)library(RcmdrMisc)library(ggplot2)# Tema blanco en ggplot2theme_set(theme_bw())# if (!require(&amp;#39;devtools&amp;#39;)) install.packages(&amp;#39;devtools&amp;#39;)# devtools::install_github(&amp;#39;fhernanb/stests&amp;#39;, force=TRUE)library(stests)Exploremos los datosConsideremos los datos de la encuesta del National Center of Education Statistics. (EUA).
 # Resumen de los datosstr(hsb2)## tibble [200 x 11] (S3: tbl_df/tbl/data.frame)## $ id : int [1:200] 70 121 86 141 172 113 50 11 84 48 .</description>

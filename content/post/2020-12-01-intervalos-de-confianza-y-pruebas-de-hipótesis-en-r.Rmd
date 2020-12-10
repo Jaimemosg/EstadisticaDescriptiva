@@ -1,7 +1,7 @@
 ---
-title: 'Intervalos de confianza y pruebas de hipótesis en R'
-author: 'Jaime Mosquera'
-date: '2020-12-01'
+title: Intervalos de confianza y pruebas de hipótesis en R
+author: Jaime Mosquera
+date: '2020-12-09'
 slug: intervalos-de-confianza-y-pruebas-de-hipótesis-en-r
 ---
 
